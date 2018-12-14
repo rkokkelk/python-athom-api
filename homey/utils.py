@@ -2,6 +2,8 @@ import sys
 import logging
 import requests
 
+from requests import Request
+
 log = logging.getLogger(__name__)
 
 def post(url, data):
@@ -16,6 +18,12 @@ def post(url, data):
         raise Exception()
 
     return r.text
+
+
+def create_url(url, params):
+    p = Request('GET', url, params=params).prepare()
+    return p.url
+
 
 def setup_logging(debug=False):
 

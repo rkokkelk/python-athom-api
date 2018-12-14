@@ -1,6 +1,6 @@
 import logging
 
-from requests import Request
+from homey.utils import create_url
 
 log = logging.getLogger(__name__)
 
@@ -25,11 +25,7 @@ class AthomCloudAPI:
             'response_type': 'code'
         }
 
-        p = Request('GET', 'https://api.athom.com/oauth2/authorise',
-                    params=params
-                   ).prepare()
-
-        return p.url
+        return create_url("https://api.athom.com/oauth2/authorise", params)
 
     def setToken(self, token):
         self.token = token
