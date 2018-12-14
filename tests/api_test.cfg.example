@@ -1,5 +1,5 @@
 [credentials]
-clientId = "Enter clientId"
-clientSecret = "Enter clientSecret"
-OATH2Token = "Enter OATH2 code"
-callback = "Enter callback URLs"
+clientId = Enter clientId
+clientSecret = Enter clientSecret
+OATH2Token = Enter OATH2 code
+callback = Enter callback URLs
