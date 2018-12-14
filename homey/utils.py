@@ -6,18 +6,48 @@ from requests import Request
 
 log = logging.getLogger(__name__)
 
-def post(url, data):
+def post(url, data, token=None, headers=dict()):
+
+    setup_authorization(token, headers)
+
     r = requests.post(
         url=url,
-        data=data
+        data=data,
+        headers=headers
     )
 
-    log.debug("POST [%d]: %s", url, r.response_code)
+    log.debug("POST [%d]: %s", r.status_code, url)
 
-    if not r.response_code:
+    if not r.status_code == 200:
+        log.error(r.text)
         raise Exception()
 
     return r.text
+
+def get(url, params=None, token=None, headers=dict()):
+
+    setup_authorization(token, headers)
+
+    r = requests.get(
+        url=url,
+        params=params,
+        headers=headers
+    )
+
+    log.debug("GET  [%d]: %s", r.status_code, url)
+
+    if not r.status_code == 200:
+        log.error(r.text)
+        raise Exception()
+
+    return r.text
+
+
+def setup_authorization(token, headers):
+    if not token:
+        return
+
+    headers['authorization'] = "Bearer {}".format(token.access_token)
 
 
 def create_url(url, params):
