@@ -10,6 +10,8 @@ def post(url, data):
         data=data
     )
 
+    log.debug("POST [%d]: %s", url, r.response_code)
+
     if not r.response_code:
         raise Exception()
 
@@ -32,4 +34,3 @@ def setup_logging(debug=False):
         ch.setLevel(logging.DEBUG)
 
     r_log.addHandler(ch)
-
