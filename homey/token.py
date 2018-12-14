@@ -1,14 +1,20 @@
+import json
+
 class Token:
 
-    token_type = None
-    expires_in = -1
-    access_token = None
-
-    def __init__(self, access_token, expires_in, token_type="bearer"):
+    def __init__(self, access_token=None, expires_in=-1, token_type="bearer", refresh_token=None):
         self.access_token = access_token
         self.expires_in = expires_in
         self.token_type = token_type
+        self.refresh_token = refresh_token
 
 
-    def refresh_token(self):
-        raise Exception("Not implemented yet")
+    @staticmethod
+    def generate_token(json_str):
+        token = Token()
+        data = json.loads(json_str)
+
+        for key, value in data.items():
+            setattr(token, key, value)
+
+        return token
