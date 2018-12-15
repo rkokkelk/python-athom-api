@@ -1,9 +1,10 @@
 import logging
 
 from homey.token import Token
+from homey.schemas.user import UserSchema
 from homey.storage.localstorage import LocalStorage
 from homey.common.utils import create_url, get, post
-from homey.common.exceptions import AthomCloudAuthenticationError, AthomCloudUnknownAPIError
+from homey.common.exceptions import AthomCloudAuthenticationError
 
 log = logging.getLogger(__name__)
 
@@ -92,7 +93,10 @@ class AthomCloudAPI:
         }
 
         try:
-            me = get(url, token=self.token, headers=headers)
+            response = get(url, token=self.token, headers=headers)
+            schema = UserSchema()
+            user = schema.loads(response)
+            return user
 
         except AthomCloudAuthenticationError as ae:
             if not self.autoRefreshTokens:
