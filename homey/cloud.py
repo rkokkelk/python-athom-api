@@ -71,7 +71,6 @@ class AthomCloudAPI:
         self.storage.set('token', self.token.__dict__)
 
 
-
     def getUser(self):
         url = "https://api.athom.com/user/me"
 
@@ -79,8 +78,16 @@ class AthomCloudAPI:
             'Content-Type': 'application/json'
         }
 
-        me = get(url, token=self.token, headers=headers)
-        log.debug(me)
+        try:
+            me = get(url, token=self.token, headers=headers)
+
+        except AthomCloudAuthenticationError as ae:
+            if not self.autoRefreshTokens:
+                raise ae
+
+            self.refreshTokens()
+
+            return self.getUser()
 
 
     def setToken(self, token):
