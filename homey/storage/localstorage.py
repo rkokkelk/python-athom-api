@@ -5,13 +5,10 @@ log = logging.getLogger(__name__)
 
 class LocalStorage:
 
-    path = None
-    storage = dict()
-
-
     def __init__(self, path="homeyLocalStorage.db"):
 
         self.path = path
+        self.storage = dict()
 
         with open(self.path, 'r') as f:
             self.storage = json.load(f)
@@ -21,7 +18,7 @@ class LocalStorage:
         self.storage[key] = value
 
         with open(self.path, 'w') as f:
-            json.dump(value, f)
+            json.dump(self.storage, f)
 
 
     def get(self, key):
@@ -33,5 +30,4 @@ class LocalStorage:
 
 
     def __contains__(self, m):
-        log.debug("Verifying %s in storage", m)
         return self.storage is not None and m in self.storage
