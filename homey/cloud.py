@@ -1,33 +1,26 @@
 import logging
 
 from homey.token import Token
-from homey.utils import create_url, get, post
 from homey.storage.localstorage import LocalStorage
+from homey.common.utils import create_url, get, post
+from homey.common.exceptions import AthomCloudAuthenticationError, AthomCloudUnknownAPIError
 
 log = logging.getLogger(__name__)
 
 class AthomCloudAPI:
 
-    clientId = None
-    clientSecret = None
-    redirectUrl = None
-    token = None
-
-    storage = None
-
-
-    def __init__(self, clientId, clientSecret, redirectUrl, storage=None):
+    def __init__(self, clientId, clientSecret, redirectUrl, autoRefreshTokens=True, storage=None):
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.redirectUrl = redirectUrl
+        self.autoRefreshTokens = autoRefreshTokens
 
+        self.token = None
         self.storage = LocalStorage() if storage is None else storage
 
         if 'token' in self.storage:
             token_dict = self.storage.get('token')
             self.token = Token(**token_dict)
-
-        log.debug("Constructor AthomCloudAPI")
 
 
     def getLoginUrl(self):
