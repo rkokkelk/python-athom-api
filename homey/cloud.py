@@ -2,6 +2,7 @@ import logging
 
 from homey.token import Token
 from homey.utils import create_url, get, post
+from homey.storage.localstorage import LocalStorage
 
 log = logging.getLogger(__name__)
 
@@ -12,12 +13,22 @@ class AthomCloudAPI:
     redirectUrl = None
     token = None
 
-    def __init__(self, clientId, clientSecret, redirectUrl):
+    storage = None
+
+
+    def __init__(self, clientId, clientSecret, redirectUrl, storage=None):
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.redirectUrl = redirectUrl
 
+        self.storage = LocalStorage() if storage is None else storage
+
+        if 'token' in self.storage:
+            token_dict = self.storage.get('token')
+            self.token = Token(**token_dict)
+
         log.debug("Constructor AthomCloudAPI")
+
 
     def getLoginUrl(self):
         params = {
@@ -45,6 +56,7 @@ class AthomCloudAPI:
 
         r = post(url, data=data, headers=headers)
         self.token = Token.generate_token(r)
+        self.storage.set('token', self.token.__dict__)
 
 
     def getUser(self):
