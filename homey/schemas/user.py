@@ -1,4 +1,5 @@
 from homey.models.user import User
+from homey.schemas.role import RoleSchema
 
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
@@ -8,6 +9,7 @@ class UserSchema(Schema):
     lastname = fields.String()
     email = fields.Email()
     language = fields.String()
+    roles = fields.List(fields.Nested(RoleSchema))
     roleIds = fields.List(fields.String())
 
     # Exclude unknown keys
@@ -16,5 +18,4 @@ class UserSchema(Schema):
 
     @post_load
     def create_obj(self, data):
-        print(data)
         return User(**data)
