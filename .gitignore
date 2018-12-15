@@ -1,6 +1,9 @@
 # Ignore config file used to run unit tests of API
 tests/api_test.cfg
 
+# Ignore localStorage file for session management
+homeyLocalStorage.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
