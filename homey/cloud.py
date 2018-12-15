@@ -24,24 +24,6 @@ class AthomCloudAPI:
             self.token = Token(**token_dict)
 
 
-    def getLoginUrl(self):
-        params = {
-            'client_id': self.clientId,
-            'redirect_uri': self.redirectUrl,
-            'response_type': 'code'
-        }
-
-        return create_url("https://api.athom.com/oauth2/authorise", params)
-
-
-    def hasAuthorizationCode(self):
-        return self.token is not None
-
-
-    def isLoggedIn(self):
-        raise NotImplementedError()
-
-
     def authenticateWithAuthorizationCode(self, oauth):
         url = "https://api.athom.com/oauth2/token"
 
@@ -64,25 +46,14 @@ class AthomCloudAPI:
         return self.token
 
 
-    def refreshTokens(self):
-        url = "https://api.athom.com/oauth2/token"
-
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-
-        data = {
+    def getLoginUrl(self):
+        params = {
             'client_id': self.clientId,
-            'client_secret': self.clientSecret,
-            'grant_type': 'refresh_token',
-            'refresh_token': self.token.refresh_token
+            'redirect_uri': self.redirectUrl,
+            'response_type': 'code'
         }
 
-        r = post(url, data=data, headers=headers)
-        self.token = Token.generate_token(r)
-        self.storage.set('token', self.token.__dict__)
-
-        return self.token
+        return create_url("https://api.athom.com/oauth2/authorise", params)
 
 
     def getUser(self):
@@ -105,6 +76,35 @@ class AthomCloudAPI:
             self.refreshTokens()
 
             return self.getUser()
+
+
+    def hasAuthorizationCode(self):
+        return self.token is not None
+
+
+    def isLoggedIn(self):
+        raise NotImplementedError()
+
+
+    def refreshTokens(self):
+        url = "https://api.athom.com/oauth2/token"
+
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+
+        data = {
+            'client_id': self.clientId,
+            'client_secret': self.clientSecret,
+            'grant_type': 'refresh_token',
+            'refresh_token': self.token.refresh_token
+        }
+
+        r = post(url, data=data, headers=headers)
+        self.token = Token.generate_token(r)
+        self.storage.set('token', self.token.__dict__)
+
+        return self.token
 
 
     def setToken(self, token):
