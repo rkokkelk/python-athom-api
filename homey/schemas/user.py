@@ -1,5 +1,6 @@
 from homey.models.user import User
 from homey.schemas.role import RoleSchema
+from homey.schemas.avatar import AvatarSchema
 
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
@@ -11,6 +12,7 @@ class UserSchema(Schema):
     language = fields.String()
     roles = fields.List(fields.Nested(RoleSchema))
     roleIds = fields.List(fields.String())
+    avatar = fields.Nested(AvatarSchema)
 
     # Exclude unknown keys
     class Meta:
