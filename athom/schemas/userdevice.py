@@ -1,4 +1,4 @@
-from homey.models.userdevice import UserDevice
+from athom.models.userdevice import UserDevice
 
 from marshmallow import Schema, fields, post_load, EXCLUDE
 

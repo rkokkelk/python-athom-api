@@ -1,10 +1,10 @@
 import logging
 
-from homey.token import Token
-from homey.schemas.user import UserSchema
-from homey.storage.localstorage import LocalStorage
-from homey.common.utils import create_url, get, post
-from homey.common.exceptions import AthomCloudAuthenticationError
+from athom.token import Token
+from athom.schemas.user import UserSchema
+from athom.storage.localstorage import LocalStorage
+from athom.common.utils import create_url, get, post
+from athom.common.exceptions import AthomCloudAuthenticationError
 
 log = logging.getLogger(__name__)
 

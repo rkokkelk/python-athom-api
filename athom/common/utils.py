@@ -4,7 +4,7 @@ import logging
 import requests
 from requests import Request
 
-from homey.common.exceptions import AthomCloudAuthenticationError, AthomCloudUnknownAPIError
+from athom.common.exceptions import AthomCloudAuthenticationError, AthomCloudUnknownAPIError
 
 log = logging.getLogger(__name__)
 

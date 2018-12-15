@@ -1,4 +1,4 @@
-from homey.models.avatar import Avatar
+from athom.models.avatar import Avatar
 
 from marshmallow import Schema, fields, post_load, EXCLUDE
 

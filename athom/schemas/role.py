@@ -1,4 +1,4 @@
-from homey.models.role import Role
+from athom.models.role import Role
 
 from marshmallow import Schema, fields, post_load, EXCLUDE
 

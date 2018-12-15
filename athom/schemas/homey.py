@@ -1,4 +1,4 @@
-from homey.models.homey import Homey
+from athom.models.homey import Homey
 
 from marshmallow import Schema, fields, post_load, EXCLUDE
 

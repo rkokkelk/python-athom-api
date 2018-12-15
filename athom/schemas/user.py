@@ -1,8 +1,8 @@
-from homey.models.user import User
-from homey.schemas.role import RoleSchema
-from homey.schemas.homey import HomeySchema
-from homey.schemas.avatar import AvatarSchema
-from homey.schemas.userdevice import UserDeviceSchema
+from athom.models.user import User
+from athom.schemas.role import RoleSchema
+from athom.schemas.homey import HomeySchema
+from athom.schemas.avatar import AvatarSchema
+from athom.schemas.userdevice import UserDeviceSchema
 
 from marshmallow import Schema, fields, post_load, EXCLUDE
 

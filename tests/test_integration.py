@@ -1,9 +1,9 @@
 import logging
 import configparser
 
-from homey import utils
-from homey.token import Token
-from homey.cloud import AthomCloudAPI
+from athom.common import utils
+from athom.token import Token
+from athom.cloud import AthomCloudAPI
 
 log = logging.getLogger(__name__)
 
@@ -32,6 +32,25 @@ class TestIntegration:
     def test_integration(self):
         api = AthomCloudAPI(self.clientId, self.clientSecret, self.returnUrl)
 
-        api.authenticateWithAuthorizationCode(self.oath)
+        if not api.hasAuthorizationCode():
+            print(api.getLoginUrl())
+            api.authenticateWithAuthorizationCode(self.oath)
 
-        api.getUser()
+            return
+
+        user = api.getUser()
+        print(user)
+
+        for role in user.roles:
+            print(role)
+
+        print(user.avatar.small)
+
+        for device in user.devices:
+            print(device)
+
+        for homey in user.homeys:
+            print(homey)
+            print(homey.geolocation)
+
+            print(homey.users)
