@@ -1,7 +1,7 @@
 class User:
 
-    def __init__(self, _id, firstname, lastname, email, language, roles,
-                 roleIds, avatar):
+    def __init__(self, _id, firstname, lastname, email, language, roleIds,
+                 avatar, devices, roles=list(), homeys=list()):
         self._id = _id
         self.firstname = firstname
         self.lastname = lastname
@@ -10,6 +10,8 @@ class User:
         self.roles = roles
         self.roleIds = roleIds
         self.avatar = avatar
+        self.homeys = homeys
+        self.devices = devices
 
     def __str__(self):
         return "[{self._id}] {self.firstname} {self.lastname}".format(self=self)
