@@ -33,6 +33,14 @@ class AthomCloudAPI:
         return create_url("https://api.athom.com/oauth2/authorise", params)
 
 
+    def hasAuthorizationCode(self):
+        return self.token is not None
+
+
+    def isLoggedIn(self):
+        raise NotImplementedError()
+
+
     def authenticateWithAuthorizationCode(self, oauth):
         url = "https://api.athom.com/oauth2/token"
 
@@ -48,8 +56,11 @@ class AthomCloudAPI:
         }
 
         r = post(url, data=data, headers=headers)
+
         self.token = Token.generate_token(r)
         self.storage.set('token', self.token.__dict__)
+
+        return self.token
 
 
     def refreshTokens(self):
@@ -69,6 +80,8 @@ class AthomCloudAPI:
         r = post(url, data=data, headers=headers)
         self.token = Token.generate_token(r)
         self.storage.set('token', self.token.__dict__)
+
+        return self.token
 
 
     def getUser(self):
