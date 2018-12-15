@@ -1,10 +1,13 @@
 import sys
 import logging
-import requests
 
+import requests
 from requests import Request
 
+from homey.common.exceptions import AthomCloudAuthenticationError, AthomCloudUnknownAPIError
+
 log = logging.getLogger(__name__)
+
 
 def post(url, data, token=None, headers=dict()):
 
@@ -18,11 +21,18 @@ def post(url, data, token=None, headers=dict()):
 
     log.debug("POST [%d]: %s", r.status_code, url)
 
-    if not r.status_code == 200:
-        log.error(r.text)
-        raise Exception()
+    if r.status_code == 200:
+        return r.text
 
-    return r.text
+    if r.status_code == 401:
+        error = AthomCloudAuthenticationError(r.text)
+
+    else:
+        error = AthomCloudUnknownAPIError(r.text)
+
+    log.error(error)
+    raise error
+
 
 def get(url, params=None, token=None, headers=dict()):
 
@@ -36,11 +46,17 @@ def get(url, params=None, token=None, headers=dict()):
 
     log.debug("GET  [%d]: %s", r.status_code, url)
 
-    if not r.status_code == 200:
-        log.error(r.text)
-        raise Exception()
+    if r.status_code == 200:
+        return r.text
 
-    return r.text
+    if r.status_code == 401:
+        error = AthomCloudAuthenticationError(r.text)
+
+    else:
+        error = AthomCloudUnknownAPIError(r.text)
+
+    log.error(error)
+    raise error
 
 
 def setup_authorization(token, headers):
