@@ -17,3 +17,7 @@ class Homey:
 
     def __str__(self):
         return "[{self._id}] {self.name} ({self.softwareVersion})".format(self=self)
+
+
+    def authenticate(self):
+        raise NotImplementedError()
