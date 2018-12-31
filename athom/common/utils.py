@@ -9,6 +9,33 @@ from athom.common.exceptions import AthomCloudAuthenticationError, AthomCloudUnk
 log = logging.getLogger(__name__)
 
 
+def json(url, data, token=None, headers=dict()):
+
+    setup_authorization(token, headers)
+
+    r = requests.post(
+        url=url,
+        json=data,
+        headers=headers
+    )
+
+    log.debug("POST/JSON [%d]: %s", r.status_code, url)
+    print(r.request.headers)
+    print(r.request.body)
+
+    if r.status_code == 200:
+        return r.text
+
+    if r.status_code == 401:
+        error = AthomCloudAuthenticationError(r.text)
+
+    else:
+        error = AthomCloudUnknownAPIError(r.text)
+
+    log.error(error)
+    raise error
+
+
 def post(url, data, token=None, headers=dict()):
 
     setup_authorization(token, headers)
