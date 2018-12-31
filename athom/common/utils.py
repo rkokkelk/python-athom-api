@@ -102,7 +102,10 @@ def setup_authorization(token, headers):
     if not token:
         return
 
-    headers['authorization'] = "Bearer {}".format(token.access_token)
+    if type(token) is Token:
+        headers['authorization'] = "Bearer {}".format(token.access_token)
+    else:
+        headers['authorization'] = "Bearer {}".format(token)
 
 
 def create_url(url, params):
