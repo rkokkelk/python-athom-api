@@ -4,7 +4,10 @@ import logging
 import requests
 from requests import Request
 
-from athom.common.exceptions import AthomCloudAuthenticationError, AthomCloudUnknownAPIError
+from athom.token import Token
+from athom.common.exceptions import AthomCloudAuthenticationError, \
+                                    AthomCloudGateWayAPIError, \
+                                    AthomCloudUnknownAPIError
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +31,9 @@ def json(url, data, token=None, headers=dict()):
 
     if r.status_code == 401:
         error = AthomCloudAuthenticationError(r.text)
+
+    if r.status_code == 502:
+        error = AthomCloudGateWayAPIError()
 
     else:
         error = AthomCloudUnknownAPIError(r.text)
@@ -54,6 +60,9 @@ def post(url, data, token=None, headers=dict()):
     if r.status_code == 401:
         error = AthomCloudAuthenticationError(r.text)
 
+    if r.status_code == 502:
+        error = AthomCloudGateWayAPIError()
+
     else:
         error = AthomCloudUnknownAPIError(r.text)
 
@@ -78,6 +87,9 @@ def get(url, params=None, token=None, headers=dict()):
 
     if r.status_code == 401:
         error = AthomCloudAuthenticationError(r.text)
+
+    if r.status_code == 502:
+        error = AthomCloudGateWayAPIError()
 
     else:
         error = AthomCloudUnknownAPIError(r.text)
