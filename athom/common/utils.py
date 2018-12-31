@@ -23,8 +23,6 @@ def json(url, data, token=None, headers=dict()):
     )
 
     log.debug("POST/JSON [%d]: %s", r.status_code, url)
-    print(r.request.headers)
-    print(r.request.body)
 
     if r.status_code == 200:
         return r.text
@@ -120,7 +118,7 @@ def setup_logging(debug=False):
         "%H:%M:%S"
     )
 
-    r_log = logging.getLogger('homey')
+    r_log = logging.getLogger('athom')
 
     ch = logging.StreamHandler(sys.stdout)
     ch.setFormatter(default_formatter)
