@@ -17,5 +17,16 @@ class AthomAPIError(Exception):
 class AthomCloudAuthenticationError(AthomAPIError):
     """Authentication error while accessing API"""
 
+class AthomCloudGateWayAPIError(AthomAPIError):
+    """API Gateway Error"""
+    def __init__(self):
+
+        self.code = 502
+        self.error = 'Bad Gateway'
+        self.description = 'Unknown bad gateway error'
+
 class AthomCloudUnknownAPIError(AthomAPIError):
     """Unknown error from API"""
+
+class AthomTokenDBError(Exception):
+    """Error getting Token from database"""
