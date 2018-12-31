@@ -1,5 +1,5 @@
+from athom.common.net import post
 from athom.common.scopes import homeySpeech
-from athom.common.net import get, post
 
 class ManagerSpeechInput:
 

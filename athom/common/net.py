@@ -1,8 +1,5 @@
-import sys
 import logging
-
 import requests
-from requests import Request
 
 from athom.token import Token
 from athom.common.exceptions import AthomCloudAuthenticationError, \
@@ -12,9 +9,10 @@ from athom.common.exceptions import AthomCloudAuthenticationError, \
 log = logging.getLogger(__name__)
 
 
-def post(url, data=None, json=None, token=None, headers=dict()):
+def post(url, data=None, json=None, token=None, headers=None):
 
-    setup_authorization(token, headers)
+    if token:
+        headers = _setup_authorization(token, headers)
 
     if data:
         r = requests.post(
@@ -31,13 +29,13 @@ def post(url, data=None, json=None, token=None, headers=dict()):
         )
 
     log.debug("POST [%d]: %s", r.status_code, url)
-
     return _parse_response(r.status_code, r)
 
 
-def get(url, params=None, token=None, headers=dict()):
+def get(url, params=None, token=None, headers=None):
 
-    setup_authorization(token, headers)
+    if token:
+        headers = _setup_authorization(token, headers)
 
     r = requests.get(
         url=url,
@@ -49,14 +47,17 @@ def get(url, params=None, token=None, headers=dict()):
     return _parse_response(r.status_code, r)
 
 
-def setup_authorization(token, headers):
-    if not token:
-        return
+def _setup_authorization(token, headers):
 
-    if type(token) is Token:
+    if not headers:
+        headers = dict()
+
+    if isinstance(token, Token):
         headers['authorization'] = "Bearer {}".format(token.access_token)
     else:
         headers['authorization'] = "Bearer {}".format(token)
+
+    return headers
 
 
 def _parse_response(status_code, response):
@@ -67,12 +68,14 @@ def _parse_response(status_code, response):
 
     if status_code == 401:
         error = AthomCloudAuthenticationError(text)
+        log.warning(error)
 
     elif status_code == 502:
         error = AthomCloudGateWayAPIError()
+        log.warning(error)
 
     else:
         error = AthomCloudUnknownAPIError(text)
+        log.error(error)
 
-    log.error(error)
     raise error
