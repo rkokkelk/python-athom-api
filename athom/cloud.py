@@ -3,7 +3,8 @@ import logging
 from athom.token import Token
 from athom.schemas.user import UserSchema
 from athom.storage.localstorage import LocalStorage
-from athom.common.utils import create_url, get, post
+from athom.common.net import get, post
+from athom.common.utils import create_url
 from athom.common.exceptions import AthomCloudAuthenticationError
 
 log = logging.getLogger(__name__)

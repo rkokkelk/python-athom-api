@@ -1,5 +1,5 @@
 from athom.common.scopes import homeySpeech
-from athom.common.utils import get, json
+from athom.common.net import get, post
 
 class ManagerSpeechInput:
 
@@ -17,7 +17,7 @@ class ManagerSpeechInput:
         if not transcript:
             raise ValueError("Missing required transcript parameter")
 
-        return json(url, data={'transcript': transcript, **opts}, token=self.token)
+        return post(url, json={'transcript': transcript, **opts}, token=self.token)
 
 
     def ask(self, text=None, **opts):
@@ -26,4 +26,4 @@ class ManagerSpeechInput:
         if not text:
             raise ValueError("Missing required text parameter")
 
-        return json(url, data={'text': text, **opts}, token=self.token)
+        return post(url, json={'text': text, **opts}, token=self.token)
