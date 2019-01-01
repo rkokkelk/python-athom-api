@@ -11,14 +11,14 @@ log = logging.getLogger(__name__)
 
 class AthomCloudAPI:
 
-    def __init__(self, clientId, clientSecret, redirectUrl, autoRefreshTokens=True, storage=None):
+    def __init__(self, clientId, clientSecret, redirectUrl, autoRefreshTokens=True, **kwargs):
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.redirectUrl = redirectUrl
         self.autoRefreshTokens = autoRefreshTokens
 
         self.token = None
-        self.storage = LocalStorage() if storage is None else storage
+        self.storage = LocalStorage() if 'storage' not in kwargs['storage'] else kwargs['storage']
 
         if 'token' in self.storage:
             token_dict = self.storage.get('token')
