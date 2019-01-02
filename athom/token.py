@@ -1,6 +1,9 @@
 import json
+import logging
 
 from athom.common.net import get, post
+
+log = logging.getLogger(__name__)
 
 class Token:
 
@@ -32,6 +35,7 @@ class Token:
             'refresh_token': self.refresh_token
         }
 
+        log.info("Refreshing token")
         r = post(url, data=data, headers=headers)
 
         data = json.loads(r)
