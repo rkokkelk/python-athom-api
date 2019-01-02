@@ -48,13 +48,14 @@ class AthomCloudAPI:
         return self.token
 
 
-    def getLoginUrl(self):
+    def getLoginUrl(self, scopes=[]):
         url = self.basePath+"/oauth2/authorise"
 
         params = {
             'client_id': self.clientId,
             'redirect_uri': self.redirectUrl,
-            'response_type': 'code'
+            'response_type': 'code',
+            'scopes': ','.join(scopes)
         }
 
         return create_url(url, params)
@@ -81,10 +82,23 @@ class AthomCloudAPI:
         raise NotImplementedError()
 
 
-    def refreshTokens(self):
-        self.token.refresh()
-        return self.token
+    def refreshTokens(self, token=self.token):
+        token.refresh()
+        return token
+
+
+    def enableAutoRefreshTokens(self):
+        self.token.refresh_token = True
+
+
+    def disableAutoRefreshTokens(self):
+        self.token.refresh_token = False
 
 
     def setToken(self, token):
         self.token = token
+
+
+    def setConfig(**kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
