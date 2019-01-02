@@ -22,7 +22,7 @@ class AthomCloudAPI:
 
         if 'token' in self.storage:
             token_dict = self.storage.get('token')
-            self.token = Token(**token_dict)
+            self.token = Token(self, **token_dict)
 
 
     def authenticateWithAuthorizationCode(self, oauth):
@@ -41,8 +41,8 @@ class AthomCloudAPI:
 
         r = post(url, data=data, headers=headers)
 
-        self.token = Token.generate_token(r)
-        self.storage.set('token', self.token.__dict__)
+        self.token = Token.generate_token(self, r)
+        self.storage.set('token', self.token.jsonify())
 
         return self.token
 
@@ -102,8 +102,8 @@ class AthomCloudAPI:
         }
 
         r = post(url, data=data, headers=headers)
-        self.token = Token.generate_token(r)
-        self.storage.set('token', self.token.__dict__)
+        self.token = Token.generate_token(self, r)
+        self.storage.set('token', self.token.jsonify())
 
         return self.token
 
