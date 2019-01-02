@@ -88,23 +88,7 @@ class AthomCloudAPI:
 
 
     def refreshTokens(self):
-        url = "https://api.athom.com/oauth2/token"
-
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-
-        data = {
-            'client_id': self.clientId,
-            'client_secret': self.clientSecret,
-            'grant_type': 'refresh_token',
-            'refresh_token': self.token.refresh_token
-        }
-
-        r = post(url, data=data, headers=headers)
-        self.token = Token.generate_token(self, r)
-        self.storage.set('token', self.token.jsonify())
-
+        self.token.refresh()
         return self.token
 
 

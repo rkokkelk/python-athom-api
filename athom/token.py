@@ -1,5 +1,7 @@
 import json
 
+from athom.common.net import get, post
+
 class Token:
 
     def __init__(self, athom, access_token=None, expires_in=-1, token_type="bearer", refresh_token=None):
@@ -14,6 +16,29 @@ class Token:
     def jsonify(self):
         columns = ['access_token', 'expires_in', 'token_type', 'refresh_token']
         return {k:v for k,v in self.__dict__.items() if k in columns}
+
+
+    def refresh(self):
+        url = "https://api.athom.com/oauth2/token"
+
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+
+        data = {
+            'client_id': self.athom.clientId,
+            'client_secret': self.athom.clientSecret,
+            'grant_type': 'refresh_token',
+            'refresh_token': self.refresh_token
+        }
+
+        r = post(url, data=data, headers=headers)
+
+        data = json.loads(r)
+        for key, value in data.items():
+            setattr(self, key, value)
+
+        self.athom.storage.set('token', self.jsonify())
 
 
     @staticmethod
