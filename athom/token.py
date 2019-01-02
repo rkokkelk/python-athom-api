@@ -41,6 +41,12 @@ class Token:
         self.athom.storage.set('token', self.jsonify())
 
 
+    def __str__(self):
+        """ Standard string representation. Access_token defines Token object
+        """
+        return self.access_token
+
+
     @staticmethod
     def generate_token(athom, json_str):
         token = Token(athom)

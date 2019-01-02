@@ -1,7 +1,6 @@
 import logging
 import requests
 
-from athom.token import Token
 from athom.common.exceptions import AthomCloudAuthenticationError, \
                                     AthomCloudGateWayAPIError, \
                                     AthomCloudUnknownAPIError
@@ -52,10 +51,7 @@ def _setup_authorization(token, headers):
     if not headers:
         headers = dict()
 
-    if isinstance(token, Token):
-        headers['authorization'] = "Bearer {}".format(token.access_token)
-    else:
-        headers['authorization'] = "Bearer {}".format(token)
+    headers['authorization'] = "Bearer {}".format(token)
 
     return headers
 
