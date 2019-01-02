@@ -8,42 +8,50 @@ from athom.common.exceptions import AthomCloudAuthenticationError, \
 log = logging.getLogger(__name__)
 
 
-def post(url, data=None, json=None, token=None, headers=None):
+def post(url, token=None, refresh=True, **kwargs):
 
     if token:
-        headers = _setup_authorization(token, headers)
+        kwargs['headers'] = _setup_authorization(token, kwargs['headers'])
 
-    if data:
+    try:
         r = requests.post(
             url=url,
-            data=data,
-            headers=headers
+            **kwargs,
         )
 
-    else:
-        r = requests.post(
-            url=url,
-            json=json,
-            headers=headers
-        )
+        log.debug("POST [%d]: %s", r.status_code, url)
+        return _parse_response(r.status_code, r)
+ 
+    except AthomCloudAuthenticationError as e:
+        # If authentication error, try to refresh token once
+        raise e if not (refresh and token and token.refresh_token)
 
-    log.debug("POST [%d]: %s", r.status_code, url)
-    return _parse_response(r.status_code, r)
+        token.refresh()
+
+        return post(url, token=token, refresh=False, **kwargs)
 
 
-def get(url, params=None, token=None, headers=None):
+def get(url, token=None, refresh=True, **kwargs):
 
     if token:
-        headers = _setup_authorization(token, headers)
+        kwargs['headers'] = _setup_authorization(token, kwargs['headers'])
 
-    r = requests.get(
-        url=url,
-        params=params,
-        headers=headers
-    )
+    try:
+        r = requests.get(
+            url=url,
+            **kwargs
+        )
 
-    log.debug("GET  [%d]: %s", r.status_code, url)
-    return _parse_response(r.status_code, r)
+        log.debug("GET  [%d]: %s", r.status_code, url)
+        return _parse_response(r.status_code, r)
+    
+    except AthomCloudAuthenticationError as e:
+        # If authentication error, try to refresh token once
+        raise e if not (refresh and token and token.refresh_token)
+
+        token.refresh()
+
+        return get(url, token=token, refresh=False, **kwargs)
 
 
 def _setup_authorization(token, headers):
