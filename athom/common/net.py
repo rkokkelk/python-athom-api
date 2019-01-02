@@ -24,7 +24,7 @@ def post(url, token=None, refresh=True, **kwargs):
  
     except AthomCloudAuthenticationError as e:
         # If authentication error, try to refresh token once
-        raise e if not (refresh and token and token.refresh_token)
+        if not (refresh and token and token.refresh_token): raise e
 
         token.refresh()
 
@@ -47,7 +47,7 @@ def get(url, token=None, refresh=True, **kwargs):
     
     except AthomCloudAuthenticationError as e:
         # If authentication error, try to refresh token once
-        raise e if not (refresh and token and token.refresh_token)
+        if not (refresh and token and token.refresh_token): raise e
 
         token.refresh()
 

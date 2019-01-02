@@ -82,7 +82,10 @@ class AthomCloudAPI:
         raise NotImplementedError()
 
 
-    def refreshTokens(self, token=self.token):
+    def refreshTokens(self, token=None):
+        if token is None:
+            self.token
+
         token.refresh()
         return token
 
