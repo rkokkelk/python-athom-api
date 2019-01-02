@@ -64,19 +64,10 @@ class AthomCloudAPI:
             'Content-Type': 'application/json'
         }
 
-        try:
-            response = get(url, token=self.token, headers=headers)
-            schema = UserSchema()
-            user = schema.loads(response)
-            return user
-
-        except AthomCloudAuthenticationError as ae:
-            if not self.autoRefreshTokens:
-                raise ae
-
-            self.refreshTokens()
-
-            return self.getUser()
+        response = get(url, token=self.token, headers=headers)
+        schema = UserSchema()
+        user = schema.loads(response)
+        return user
 
 
     def hasAuthorizationCode(self):
