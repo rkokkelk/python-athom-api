@@ -18,6 +18,7 @@ class AthomCloudAPI:
         self.autoRefreshTokens = autoRefreshTokens
 
         self.token = None
+        self.basePath = 'https://api.athom.com'
         self.storage = LocalStorage() if storage is None else storage
 
         if 'token' in self.storage:
@@ -26,7 +27,7 @@ class AthomCloudAPI:
 
 
     def authenticateWithAuthorizationCode(self, oauth):
-        url = "https://api.athom.com/oauth2/token"
+        url = self.basePath+"/oauth2/token"
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -48,17 +49,19 @@ class AthomCloudAPI:
 
 
     def getLoginUrl(self):
+        url = self.basePath+"/oauth2/authorise"
+
         params = {
             'client_id': self.clientId,
             'redirect_uri': self.redirectUrl,
             'response_type': 'code'
         }
 
-        return create_url("https://api.athom.com/oauth2/authorise", params)
+        return create_url(url, params)
 
 
     def getUser(self):
-        url = "https://api.athom.com/user/me"
+        url = self.basePath+"/user/me"
 
         headers = {
             'Content-Type': 'application/json'
