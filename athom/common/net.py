@@ -1,9 +1,12 @@
 import logging
+
 import requests
+from requests.exceptions import ConnectionError, SSLError
 
 from athom.common.exceptions import AthomCloudAuthenticationError, \
                                     AthomCloudGateWayAPIError, \
-                                    AthomCloudUnknownAPIError
+                                    AthomCloudUnknownAPIError, \
+                                    AthomAPIConnectionError
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +28,11 @@ def post(url, token=None, refresh=True, **kwargs):
 
         log.debug("POST [%d]: %s", r.status_code, url)
         return _parse_response(r.status_code, r)
- 
+
+    except (ConnectionError, SSLError) as e:
+        log.critical(e)
+        raise AthomAPIConnectionError(e)
+
     except AthomCloudAuthenticationError as e:
         # If authentication error, try to refresh token once
         if not (refresh and token and token.refresh_token): raise e
@@ -49,7 +56,11 @@ def get(url, token=None, refresh=True, **kwargs):
 
         log.debug("GET  [%d]: %s", r.status_code, url)
         return _parse_response(r.status_code, r)
-    
+
+    except (ConnectionError, SSLError) as e:
+        log.critical(e)
+        raise AthomAPIConnectionError(e)
+
     except AthomCloudAuthenticationError as e:
         # If authentication error, try to refresh token once
         if not (refresh and token and token.refresh_token): raise e
