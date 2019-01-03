@@ -22,7 +22,7 @@ def post(url, token=None, refresh=True, **kwargs):
     try:
         r = requests.post(
             url=url,
-            timeout=TIMEOUT
+            timeout=TIMEOUT,
             **kwargs,
         )
 
@@ -50,7 +50,7 @@ def get(url, token=None, refresh=True, **kwargs):
     try:
         r = requests.get(
             url=url,
-            timeout=TIMEOUT
+            timeout=TIMEOUT,
             **kwargs
         )
 
