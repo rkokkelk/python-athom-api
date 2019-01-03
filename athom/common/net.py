@@ -7,6 +7,9 @@ from athom.common.exceptions import AthomCloudAuthenticationError, \
 
 log = logging.getLogger(__name__)
 
+# Timeout for (connect, read)
+TIMEOUT = (4, 10)
+
 
 def post(url, token=None, refresh=True, **kwargs):
 
@@ -16,6 +19,7 @@ def post(url, token=None, refresh=True, **kwargs):
     try:
         r = requests.post(
             url=url,
+            timeout=TIMEOUT
             **kwargs,
         )
 
@@ -39,6 +43,7 @@ def get(url, token=None, refresh=True, **kwargs):
     try:
         r = requests.get(
             url=url,
+            timeout=TIMEOUT
             **kwargs
         )
 
