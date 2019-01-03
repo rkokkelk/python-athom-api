@@ -1,5 +1,11 @@
 import json
 
+class AthomAPIConnectionError(Exception):
+    """Error accesing API"""
+
+class AthomTokenDBError(Exception):
+    """Error getting Token from database"""
+
 class AthomAPIError(Exception):
     """General error while using API"""
 
@@ -25,14 +31,11 @@ class AthomCloudAuthenticationError(AthomAPIError):
 
 class AthomCloudGateWayAPIError(AthomAPIError):
     """API Gateway Error"""
-    def __init__(self):
 
+    def __init__(self):
         self.code = 502
         self.error = 'Bad Gateway'
         self.description = 'Unknown bad gateway error'
 
 class AthomCloudUnknownAPIError(AthomAPIError):
     """Unknown error from API"""
-
-class AthomTokenDBError(Exception):
-    """Error getting Token from database"""
