@@ -12,7 +12,7 @@ class Update:
 
 
     def languages(self):
-        return self.changelog.keys()
+        return list(self.changelog.keys())
 
 
     def __str__(self):

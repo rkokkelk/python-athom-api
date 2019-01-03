@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 class AthomFirmwareAPI:
 
     def __init__(self, baseUrl=None):
-        self.basePath = 'https://firmware.athom.com/api'
+        self.basePath = 'https://firmware.athom.com/api' if not baseUrl else baseUrl
 
 
     def getUpdatesChangelog(self):
