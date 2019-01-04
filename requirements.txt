@@ -3,6 +3,7 @@ attrs==18.2.0
 certifi==2018.11.29
 chardet==3.0.4
 configparser==3.5.0
+coverage==4.5.2
 idna==2.8
 marshmallow==3.0.0rc1
 mock==2.0.0
