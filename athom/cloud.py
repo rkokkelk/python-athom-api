@@ -84,7 +84,7 @@ class AthomCloudAPI:
 
     def refreshTokens(self, token=None):
         if token is None:
-            self.token
+            token = self.token
 
         token.refresh()
         return token
@@ -102,6 +102,6 @@ class AthomCloudAPI:
         self.token = token
 
 
-    def setConfig(**kwargs):
+    def setConfig(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
