@@ -26,7 +26,7 @@ def post(url, token=None, refresh=True, **kwargs):
         r = requests.post(
             url=url,
             timeout=TIMEOUT,
-            **kwargs,
+            **kwargs
         )
 
         log.debug("POST [%d]: %s", r.status_code, url)
