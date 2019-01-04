@@ -7,11 +7,11 @@ log = logging.getLogger(__name__)
 
 class Token:
 
-    def __init__(self, athom, access_token=None, expires_in=-1, token_type="bearer", refresh_token=None):
-        self.access_token = access_token
-        self.expires_in = expires_in
-        self.token_type = token_type
-        self.refresh_token = refresh_token
+    def __init__(self, athom, **kwargs):
+        self.access_token = kwargs.get('access_token', None)
+        self.expires_in = kwargs.get('expires_in', -1)
+        self.token_type = kwargs.get('token_type', 'bearer')
+        self.refresh_token = kwargs.get('refresh_token', None)
 
         self.athom = athom
 
