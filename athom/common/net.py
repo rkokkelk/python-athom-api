@@ -16,6 +16,9 @@ TIMEOUT = (4, 10)
 
 def post(url, token=None, refresh=True, **kwargs):
 
+    if 'headers' not in kwargs:
+        kwargs['headers'] = dict()
+
     if token:
         kwargs['headers'] = _setup_authorization(token, kwargs['headers'])
 
@@ -44,6 +47,9 @@ def post(url, token=None, refresh=True, **kwargs):
 
 def get(url, token=None, refresh=True, **kwargs):
 
+    if 'headers' not in kwargs:
+        kwargs['headers'] = dict()
+
     if token:
         kwargs['headers'] = _setup_authorization(token, kwargs['headers'])
 
@@ -71,9 +77,6 @@ def get(url, token=None, refresh=True, **kwargs):
 
 
 def _setup_authorization(token, headers):
-
-    if not headers:
-        headers = dict()
 
     headers['authorization'] = "Bearer {}".format(token)
 
