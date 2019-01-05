@@ -1,63 +1,81 @@
 import logging
-import requests
 
-from athom.token import Token
+import requests
+from requests.exceptions import ConnectionError, SSLError
+
 from athom.common.exceptions import AthomCloudAuthenticationError, \
                                     AthomCloudGateWayAPIError, \
-                                    AthomCloudUnknownAPIError
+                                    AthomCloudUnknownAPIError, \
+                                    AthomAPIConnectionError
 
 log = logging.getLogger(__name__)
 
+# Timeout for (connect, read)
+TIMEOUT = (4, 10)
 
-def post(url, data=None, json=None, token=None, headers=None):
 
-    if token:
-        headers = _setup_authorization(token, headers)
+def post(url, token=None, refresh=True, **kwargs):
 
-    if data:
+    headers = kwargs.get('headers', dict())
+    _setup_authorization(token, headers)
+
+    try:
         r = requests.post(
             url=url,
-            data=data,
-            headers=headers
+            timeout=TIMEOUT,
+            **kwargs
         )
 
-    else:
-        r = requests.post(
+        log.debug("POST [%d]: %s", r.status_code, url)
+        return _parse_response(r.status_code, r)
+
+    except (ConnectionError, SSLError) as e:
+        log.critical(e)
+        raise AthomAPIConnectionError(e)
+
+    except AthomCloudAuthenticationError as e:
+        # If authentication error, try to refresh token once
+        if not (refresh and token and token.refresh_token): raise e
+
+        token.refresh()
+
+        return post(url, token=token, refresh=False, **kwargs)
+
+
+def get(url, token=None, refresh=True, **kwargs):
+
+    headers = kwargs.get('headers', dict())
+    _setup_authorization(token, headers)
+
+    try:
+        r = requests.get(
             url=url,
-            json=json,
-            headers=headers
+            timeout=TIMEOUT,
+            **kwargs
         )
 
-    log.debug("POST [%d]: %s", r.status_code, url)
-    return _parse_response(r.status_code, r)
+        log.debug("GET  [%d]: %s", r.status_code, url)
+        return _parse_response(r.status_code, r)
 
+    except (ConnectionError, SSLError) as e:
+        log.critical(e)
+        raise AthomAPIConnectionError(e)
 
-def get(url, params=None, token=None, headers=None):
+    except AthomCloudAuthenticationError as e:
+        # If authentication error, try to refresh token once
+        if not (refresh and token and token.refresh_token): raise e
 
-    if token:
-        headers = _setup_authorization(token, headers)
+        token.refresh()
 
-    r = requests.get(
-        url=url,
-        params=params,
-        headers=headers
-    )
-
-    log.debug("GET  [%d]: %s", r.status_code, url)
-    return _parse_response(r.status_code, r)
+        return get(url, token=token, refresh=False, **kwargs)
 
 
 def _setup_authorization(token, headers):
 
-    if not headers:
-        headers = dict()
+    if not token:
+        return
 
-    if isinstance(token, Token):
-        headers['authorization'] = "Bearer {}".format(token.access_token)
-    else:
-        headers['authorization'] = "Bearer {}".format(token)
-
-    return headers
+    headers['authorization'] = "Bearer {}".format(token)
 
 
 def _parse_response(status_code, response):

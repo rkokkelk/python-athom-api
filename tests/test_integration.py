@@ -1,3 +1,4 @@
+import pytest
 import logging
 import configparser
 
@@ -29,6 +30,7 @@ class TestIntegration:
 
         utils.setup_logging(debug=True)
 
+    @pytest.mark.integration
     def test_integration(self):
         api = AthomCloudAPI(self.clientId, self.clientSecret, self.returnUrl)
 

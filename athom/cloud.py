@@ -22,11 +22,11 @@ class AthomCloudAPI:
 
         if 'token' in self.storage:
             token_dict = self.storage.get('token')
-            self.token = Token(**token_dict)
+            self.token = Token(self, **token_dict)
 
 
     def authenticateWithAuthorizationCode(self, oauth):
-        url = "https://api.athom.com/oauth2/token"
+        url = self.basePath+"/oauth2/token"
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -41,42 +41,36 @@ class AthomCloudAPI:
 
         r = post(url, data=data, headers=headers)
 
-        self.token = Token.generate_token(r)
-        self.storage.set('token', self.token.__dict__)
+        self.token = Token.generate_token(self, r)
+        self.storage.set('token', self.token.jsonify())
 
         return self.token
 
 
-    def getLoginUrl(self):
+    def getLoginUrl(self, scopes=[]):
+        url = self.basePath+"/oauth2/authorise"
+
         params = {
             'client_id': self.clientId,
             'redirect_uri': self.redirectUrl,
-            'response_type': 'code'
+            'response_type': 'code',
+            'scopes': ','.join(scopes)
         }
 
-        return create_url("https://api.athom.com/oauth2/authorise", params)
+        return create_url(url, params)
 
 
     def getUser(self):
-        url = "https://api.athom.com/user/me"
+        url = self.basePath+"/user/me"
 
         headers = {
             'Content-Type': 'application/json'
         }
 
-        try:
-            response = get(url, token=self.token, headers=headers)
-            schema = UserSchema()
-            user = schema.loads(response)
-            return user
-
-        except AthomCloudAuthenticationError as ae:
-            if not self.autoRefreshTokens:
-                raise ae
-
-            self.refreshTokens()
-
-            return self.getUser()
+        response = get(url, token=self.token, headers=headers)
+        schema = UserSchema()
+        user = schema.loads(response)
+        return user
 
 
     def hasAuthorizationCode(self):
@@ -87,26 +81,26 @@ class AthomCloudAPI:
         raise NotImplementedError()
 
 
-    def refreshTokens(self):
-        url = "https://api.athom.com/oauth2/token"
+    def refreshTokens(self, token=None):
+        if token is None:
+            token = self.token
 
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
+        token.refresh()
+        return token
 
-        data = {
-            'client_id': self.clientId,
-            'client_secret': self.clientSecret,
-            'grant_type': 'refresh_token',
-            'refresh_token': self.token.refresh_token
-        }
 
-        r = post(url, data=data, headers=headers)
-        self.token = Token.generate_token(r)
-        self.storage.set('token', self.token.__dict__)
+    def enableAutoRefreshTokens(self):
+        self.token.refresh_token = True
 
-        return self.token
+
+    def disableAutoRefreshTokens(self):
+        self.token.refresh_token = False
 
 
     def setToken(self, token):
         self.token = token
+
+
+    def setConfig(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
