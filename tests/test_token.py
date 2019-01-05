@@ -1,7 +1,9 @@
 import json
 import mock
+import pytest
 import responses
 
+from athom.common.exceptions import AthomAPISessionError
 from athom.token import Token
 
 class TestToken:
@@ -21,6 +23,16 @@ class TestToken:
             assert getattr(token, key) == value
 
         assert str(token) == self.data['access_token']
+
+
+    @mock.patch('athom.cloud.AthomCloudAPI')
+    def test_token_bool(self, mock_api):
+        token = Token(mock_api, **self.data)
+
+        assert token
+
+        token.access_token = None
+        assert not token
 
 
     @mock.patch('athom.cloud.AthomCloudAPI')
@@ -63,3 +75,40 @@ class TestToken:
         assert request.headers['Content-Type'] == 'application/x-www-form-urlencoded'
         assert 'grant_type=refresh_token' in request.body
         assert 'refresh_token='+self.data['refresh_token'] in request.body
+
+
+    @responses.activate
+    @mock.patch('athom.cloud.AthomCloudAPI')
+    def test_token_auto_refresh_fail(self, mock_api):
+        url = 'https://api.athom.com/oauth2/token'
+        oauth_json = {
+            "code": "401",
+            "error": "invalid_refresh_code",
+            "error_description": "Invalid refresh code"
+        }
+
+        token = Token(mock_api, **self.data)
+        responses.add(responses.POST, url, body=json.dumps(oauth_json), status=401)
+
+        with pytest.raises(AthomAPISessionError):
+            token.refresh()
+
+        assert token.refresh_token is None
+        assert token.token_type is None
+        assert token.expires_in == -1
+
+        with pytest.raises(AthomAPISessionError):
+            assert token.access_token is None
+
+    @responses.activate
+    @mock.patch('athom.cloud.AthomCloudAPI')
+    def test_token_destroy(self, mock_api):
+        token = Token(mock_api, **self.data)
+        token.destroy()
+
+        assert token.refresh_token is None
+        assert token.token_type is None
+        assert token.expires_in == -1
+
+        with pytest.raises(AthomAPISessionError):
+            assert token.access_token is None
