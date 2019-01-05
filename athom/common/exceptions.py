@@ -6,6 +6,12 @@ class AthomAPIConnectionError(Exception):
 class AthomTokenDBError(Exception):
     """Error getting Token from database"""
 
+class AthomAPISessionError(Exception):
+    """No valid OAUTH2 session required to access API's"""
+
+    def __str__(self):
+        return "No OAUTH2 session available for accessing API's"
+
 class AthomAPIError(Exception):
     """General error while using API"""
 
