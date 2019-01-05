@@ -11,14 +11,16 @@ log = logging.getLogger(__name__)
 
 class AthomCloudAPI:
 
-    def __init__(self, clientId, clientSecret, redirectUrl, autoRefreshTokens=True, **kwargs):
+    def __init__(self, clientId, clientSecret, redirectUrl, **kwargs):
+        self.token = None
+        self.basePath = 'https://api.athom.com'
+
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.redirectUrl = redirectUrl
-        self.autoRefreshTokens = autoRefreshTokens
 
-        self.token = None
-        self.storage = LocalStorage() if 'storage' not in kwargs['storage'] else kwargs['storage']
+        self.storage = kwargs.get('storage', LocalStorage())
+        self.autoRefreshTokens = kwargs.get('autoRefreshTokens', True)
 
         if 'token' in self.storage:
             token_dict = self.storage.get('token')
@@ -81,10 +83,8 @@ class AthomCloudAPI:
         raise NotImplementedError()
 
 
-    def refreshTokens(self, token=None):
-        if token is None:
-            token = self.token
-
+    def refreshTokens(self, **kwargs):
+        token = kwargs.get('token', self.token)
         token.refresh()
         return token
 

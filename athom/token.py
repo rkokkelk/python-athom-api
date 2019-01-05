@@ -18,7 +18,7 @@ class Token:
 
     def jsonify(self):
         columns = ['access_token', 'expires_in', 'token_type', 'refresh_token']
-        return {k:v for k,v in self.__dict__.items() if k in columns}
+        return {k:v for k, v in self.__dict__.items() if k in columns}
 
 
     def refresh(self):
