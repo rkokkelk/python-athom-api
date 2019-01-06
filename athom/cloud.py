@@ -12,13 +12,13 @@ log = logging.getLogger(__name__)
 class AthomCloudAPI:
 
     def __init__(self, clientId, clientSecret, redirectUrl, **kwargs):
-        self.token = None
         self.basePath = 'https://api.athom.com'
 
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.redirectUrl = redirectUrl
 
+        self.token = kwargs.get('token', Token(self))
         self.storage = kwargs.get('storage', LocalStorage())
         self.autoRefreshTokens = kwargs.get('autoRefreshTokens', True)
 
@@ -76,7 +76,7 @@ class AthomCloudAPI:
 
 
     def hasAuthorizationCode(self):
-        return self.token is not None
+        return self.token is not None and self.token
 
 
     def isLoggedIn(self):
@@ -90,11 +90,11 @@ class AthomCloudAPI:
 
 
     def enableAutoRefreshTokens(self):
-        self.token.refresh_token = True
+        self.autoRefreshTokens = True
 
 
     def disableAutoRefreshTokens(self):
-        self.token.refresh_token = False
+        self.autoRefreshTokens = False
 
 
     def setToken(self, token):

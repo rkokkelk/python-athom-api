@@ -76,7 +76,7 @@ class Token:
     def __str__(self):
         """ Standard string representation. Access_token defines Token object
         """
-        return self._access_token
+        return self.access_token
 
 
     def __bool__(self):

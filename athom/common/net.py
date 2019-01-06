@@ -71,8 +71,7 @@ def get(url, token=None, refresh=True, **kwargs):
 
 
 def _setup_authorization(token, headers):
-
-    if not token:
+    if token is None:
         return
 
     headers['authorization'] = "Bearer {}".format(token)
@@ -84,7 +83,7 @@ def _parse_response(status_code, response):
     if status_code == 200:
         return text
 
-    if status_code == 401:
+    if status_code in (400, 401):
         error = AthomCloudAuthenticationError(text)
         log.warning(error)
 
