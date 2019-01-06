@@ -16,8 +16,7 @@ TIMEOUT = (4, 10)
 
 def post(url, token=None, refresh=True, **kwargs):
 
-    headers = kwargs.get('headers', dict())
-    _setup_authorization(token, headers)
+    _setup_authorization(token, kwargs)
 
     try:
         r = requests.post(
@@ -44,8 +43,7 @@ def post(url, token=None, refresh=True, **kwargs):
 
 def get(url, token=None, refresh=True, **kwargs):
 
-    headers = kwargs.get('headers', dict())
-    _setup_authorization(token, headers)
+    _setup_authorization(token, kwargs)
 
     try:
         r = requests.get(
@@ -70,11 +68,14 @@ def get(url, token=None, refresh=True, **kwargs):
         return get(url, token=token, refresh=False, **kwargs)
 
 
-def _setup_authorization(token, headers):
+def _setup_authorization(token, kwargs):
+    headers = kwargs.get('headers', dict())
+
     if token is None:
         return
 
     headers['authorization'] = "Bearer {}".format(token)
+    kwargs['headers'] = headers
 
 
 def _parse_response(status_code, response):
