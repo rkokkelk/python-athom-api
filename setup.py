@@ -9,7 +9,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="athom-api",
-    version="0.0.1",
+    version="0.2.0",
     author="Roy K",
     author_email="rkokk@protonmail.com",
     description=("A python module for accessing the Athom Web-API for use with Athom Homey"),
