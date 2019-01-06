@@ -51,8 +51,13 @@ class TestIntegration:
         for device in user.devices:
             print(device)
 
-        for homey in user.homeys:
-            print(homey)
-            print(homey.geolocation)
+        homey = user.getFirstHomey()
+        print(homey)
+        print(homey.geolocation)
 
-            print(homey.users)
+        print(homey.users)
+
+        homeyAPI = homey.authenticate()
+
+        homeyAPI.ManagerSpeechInput.parseSpeech(transcript='foobar')
+        print(homeyAPI.ManagerApps.getApps())
