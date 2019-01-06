@@ -1,5 +1,5 @@
+from athom.common import scopes
 from athom.common.net import post
-from athom.common.scopes import homeySpeech
 
 class ManagerSpeechInput:
 
@@ -7,7 +7,7 @@ class ManagerSpeechInput:
 
         self.homey = homey
         self.homeyPath = "http://{homey.ip}/api/manager/speech-input".format(homey=homey)
-        self.requiredScopes = homeySpeech()
+        self.requiredScopes = scopes.HOMEY_SPEECH
         self.token = token
 
 

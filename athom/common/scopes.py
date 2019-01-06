@@ -1,16 +1,3 @@
-class homeySpeech:
-
-    def __str__(self):
-        return "homey.speech"
-
-
-class homeyLogicReadonly:
-
-    def __str__(self):
-        return "homey.logic.readonly"
-
-
-class homeySystem:
-
-    def __str__(self):
-        return "homey.system"
+HOMEY_LOGIC_READONLY = 'homey.logic.readonly'
+HOMEY_SPEECH = 'homey.speech'
+HOMEY_SYSTEM = 'homey.system'
