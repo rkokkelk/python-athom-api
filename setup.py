@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 
 setup(
-    name="python-athom-api",
+    name="athom-api",
     version="0.0.1",
     author="Roy K",
     author_email="rkokk@protonmail.com",
@@ -21,5 +21,10 @@ setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities"
-    ]
+    ],
+    entry_points={
+        'console_scripts': [
+            'athom = athom.__main__:main'
+        ]
+    }
 )
