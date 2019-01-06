@@ -1,14 +1,15 @@
 from athom.common import scopes
 from athom.common.net import post
+from athom.managers.manager import Manager
 
-class ManagerSpeechInput:
+class ManagerSpeechInput(Manager):
 
-    def __init__(self, homey, token):
+    def __init__(self, **kwargs):
 
-        self.homey = homey
-        self.homeyPath = "http://{homey.ip}/api/manager/speech-input".format(homey=homey)
+        super().__init__(**kwargs)
+
+        self.homeyPath = "http://{homey.ip}/api/manager/speech-input".format(homey=self.homey)
         self.requiredScopes = scopes.HOMEY_SPEECH
-        self.token = token
 
 
     def parseSpeech(self, transcript=None, **opts):

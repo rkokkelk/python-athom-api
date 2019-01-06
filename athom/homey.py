@@ -7,7 +7,7 @@ class HomeyAPI:
         self.ip = ipInternal
         self.token = token
 
-        self.ManagerSpeechInput = ManagerSpeechInput(self, token=token)
+        self.ManagerSpeechInput = ManagerSpeechInput(homey=self, token=token)
 
 
     def forCurrentHomey(self):
