@@ -33,8 +33,10 @@ def post(url, token=None, refresh=True, **kwargs):
         raise AthomAPIConnectionError(e)
 
     except AthomCloudAuthenticationError as e:
+
         # If authentication error, try to refresh token once
-        if not (refresh and token and token.refresh_token): raise e
+        if not isinstance(token, str) and not (refresh and token and token.refresh_token):
+            raise e
 
         token.refresh()
 
@@ -60,8 +62,10 @@ def get(url, token=None, refresh=True, **kwargs):
         raise AthomAPIConnectionError(e)
 
     except AthomCloudAuthenticationError as e:
+
         # If authentication error, try to refresh token once
-        if not (refresh and token and token.refresh_token): raise e
+        if not isinstance(token, str) and not (refresh and token and token.refresh_token):
+            raise e
 
         token.refresh()
 
