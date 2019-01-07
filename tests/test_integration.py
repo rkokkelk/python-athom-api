@@ -2,6 +2,9 @@ import pytest
 import logging
 import configparser
 
+from pprint import pprint
+from marshmallow.exceptions import ValidationError
+
 from athom.common import utils
 from athom.token import Token
 from athom.cloud import AthomCloudAPI
@@ -60,4 +63,5 @@ class TestIntegration:
         homeyAPI = homey.authenticate()
 
         homeyAPI.ManagerSpeechInput.parseSpeech(transcript='foobar')
-        print(homeyAPI.ManagerApps.getApps())
+        for app in homeyAPI.ManagerApps.getApps():
+            print(app)
