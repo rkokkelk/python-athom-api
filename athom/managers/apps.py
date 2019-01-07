@@ -1,6 +1,9 @@
+import json
+
 from athom.common import scopes
 from athom.common.net import get, post
 from athom.managers.manager import Manager
+from athom.models.managers.apps import Apps, AppsSchema
 
 class ManagerApps(Manager):
 
@@ -16,7 +19,10 @@ class ManagerApps(Manager):
 
 
     def getApps(self):
-        return get(self.homeyPath, token=self.token)
+        r = get(self.homeyPath, token=self.token)
+        schema = AppsSchema(many=True)
+        apps = schema.load(json.loads(r)['result'].values())
+        return apps
 
 
     def getApp(self, id):
