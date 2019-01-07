@@ -1,17 +1,21 @@
+from athom.models.role import RoleSchema
+from athom.models.homey import HomeySchema
+from athom.models.avatar import AvatarSchema
+from athom.models.userdevice import UserDeviceSchema
+
+from marshmallow import Schema, fields, post_load, EXCLUDE
+
 class User:
 
-    def __init__(self, _id, firstname, lastname, email, language, roleIds,
-                 avatar, devices, roles=list(), homeys=list()):
+    def __init__(self, _id=None, **kwargs):
         self._id = _id
-        self.firstname = firstname
-        self.lastname = lastname
-        self.email = email
-        self.language = language
-        self.roles = roles
-        self.roleIds = roleIds
-        self.avatar = avatar
-        self.homeys = homeys
-        self.devices = devices
+        self.firstname = kwargs.pop('firstname', None)
+        self.lastname = kwargs.pop('lastname', None)
+        self.devices = kwargs.pop('devices', list())
+        self.homeys = kwargs.pop('homeys', list())
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def __str__(self):
         return "[{self._id}] {self.firstname} {self.lastname}".format(self=self)
@@ -45,3 +49,18 @@ class User:
             return self.homeys[0]
 
         raise LookupError()
+
+
+class UserSchema(Schema):
+    avatar = fields.Nested(AvatarSchema)
+    roles = fields.List(fields.Nested(RoleSchema))
+    homeys = fields.List(fields.Nested(HomeySchema))
+    devices = fields.List(fields.Nested(UserDeviceSchema))
+
+    class Meta:
+        additional = ['_id', 'firstname', 'lastname', 'email', 'language', 'roleIds']
+        unknown = EXCLUDE
+
+    @post_load
+    def create_obj(self, data):
+        return User(**data)

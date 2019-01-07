@@ -1,14 +1,17 @@
 import logging
 
+from marshmallow import Schema, fields, post_load, EXCLUDE
+
 log = logging.getLogger(__name__)
 
 class Update:
 
-    def __init__(self, version, changelog, channels, date):
+    def __init__(self, version=None, **kwargs):
         self.version = version
-        self.changelog = changelog
-        self.channels = channels
-        self.date = date
+        self.changelog = kwargs.pop('changelog', dict())
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
 
     def languages(self):
@@ -59,3 +62,15 @@ class Update:
         else:
             # 1.5.3 > 2.0.0-rc10
             return self.version > other.version
+
+
+class UpdateSchema(Schema):
+    date = fields.DateTime()
+
+    class Meta:
+        additional = ['version', 'changelog', 'channels']
+        unknown = EXCLUDE
+
+    @post_load
+    def create_obj(self, data):
+        return Update(**data)

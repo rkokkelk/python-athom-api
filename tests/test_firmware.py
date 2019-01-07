@@ -70,9 +70,9 @@ class TestFirmware:
 
 
     def test_firmware_objects_comparison(self):
-        nones = [None, None, None]
+        nones = {'changelog': None, 'channels': None, 'date': None}
 
-        assert Update('2.0.0', *nones) < Update('2.0.0-rc1', *nones)
-        assert Update('2.0.0-rc1', *nones) < Update('2.0.0-rc10', *nones)
-        assert Update('1.5.20-rc18', *nones) < Update('2.0.0', *nones)
-        assert Update('1.5.20-rc18', *nones) == Update('1.5.20-rc18', *nones)
+        assert Update('2.0.0', **nones) < Update('2.0.0-rc1', **nones)
+        assert Update('2.0.0-rc1', **nones) < Update('2.0.0-rc10', **nones)
+        assert Update('1.5.20-rc18', **nones) < Update('2.0.0', **nones)
+        assert Update('1.5.20-rc18', **nones) == Update('1.5.20-rc18', **nones)

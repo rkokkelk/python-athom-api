@@ -2,8 +2,7 @@ import json
 import logging
 
 from athom.common.net import get
-from athom.models.update import Update
-from athom.schemas.update import UpdateSchema
+from athom.models.update import Update, UpdateSchema
 
 log = logging.getLogger(__name__)
 
