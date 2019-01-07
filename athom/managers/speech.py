@@ -5,7 +5,6 @@ from athom.managers.manager import Manager
 class ManagerSpeechInput(Manager):
 
     def __init__(self, **kwargs):
-
         super().__init__(**kwargs)
 
         self.homeyPath = "http://{homey.ip}/api/manager/speech-input".format(homey=self.homey)

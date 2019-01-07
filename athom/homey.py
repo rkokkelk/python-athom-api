@@ -1,3 +1,4 @@
+from athom.managers.apps import ManagerApps
 from athom.managers.speech import ManagerSpeechInput
 
 class HomeyAPI:
@@ -7,6 +8,7 @@ class HomeyAPI:
         self.ip = ipInternal
         self.token = token
 
+        self.ManagerApps = ManagerApps(homey=self, token=token)
         self.ManagerSpeechInput = ManagerSpeechInput(homey=self, token=token)
 
 
