@@ -16,6 +16,7 @@ TIMEOUT = (4, 10)
 
 
 def post(url, refresh=True, **kwargs):
+    log.debug('POST: %s', url)
     token = kwargs.get('token', None)
 
     try:
@@ -36,7 +37,30 @@ def post(url, refresh=True, **kwargs):
         return post(url, refresh=False, **kwargs)
 
 
+def delete(url, refresh=True, **kwargs):
+    log.debug('DELETE: %s', url)
+    token = kwargs.get('token', None)
+
+    try:
+        return _request(
+            requests.delete,
+            url,
+            **kwargs
+        )
+
+    except AthomCloudAuthenticationError as e:
+
+        # If authentication error, try to refresh token once
+        if not isinstance(token, str) and not (refresh and token and token.refresh_token):
+            raise e
+
+        token.refresh()
+
+        return delete(url, refresh=False, **kwargs)
+
+
 def get(url, refresh=True, **kwargs):
+    log.debug('GET: %s', url)
     token = kwargs.get('token', None)
 
     try:
@@ -55,6 +79,29 @@ def get(url, refresh=True, **kwargs):
         token.refresh()
 
         return get(url, refresh=False, **kwargs)
+
+
+def put(url, refresh=True, **kwargs):
+    token = kwargs.get('token', None)
+
+    try:
+        return _request(
+            requests.put,
+            url,
+            **kwargs
+        )
+
+    except AthomCloudAuthenticationError as e:
+
+        # If authentication error, try to refresh token once
+        if not isinstance(token, str) and not (refresh and token and token.refresh_token):
+            raise e
+
+        token.refresh()
+
+        return put(url, refresh=False, **kwargs)
+
+
 
 
 def _request(method, url, token=None, **kwargs):
