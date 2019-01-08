@@ -1,7 +1,7 @@
 import json
 
 from athom.common import scopes
-from athom.common.net import get, post
+from athom.common.net import delete, get, post
 from athom.managers.manager import Manager
 from athom.models.managers.apps import Apps, AppsSchema
 
@@ -21,28 +21,44 @@ class ManagerApps(Manager):
     def getApps(self):
         r = get(self.homeyPath, token=self.token)
         schema = AppsSchema(many=True)
-        apps = schema.load(json.loads(r)['result'].values())
-        return apps
+        return schema.load(json.loads(r)['result'].values())
 
 
     def getApp(self, id):
-        NotImplementedError()
+        r = get(
+            "{path}/{id}".format(path=self.homeyPath, id=id),
+            token=self.token
+        )
+        schema = AppsSchema()
+        return schema.load(json.loads(r)['result'])
 
 
     def updateApp(self, id, app):
         NotImplementedError()
 
 
-    def uninstallApp(self, id, purgeSettings=False):
-        NotImplementedError()
+    def uninstallApp(self, id, purgeSettings=True):
+        r = delete(
+            "{path}/{id}".format(path=self.homeyPath, id=id),
+            data={'purgeSettings': purgeSettings},
+            token=self.token
+        )
 
 
     def getAppStd(self, id):
-        NotImplementedError()
+        r = post(
+            "{path}/{id}/crashlog".format(path=self.homeyPath, id=id),
+            token=self.token
+        )
+        return json.loads(r)['result']
 
 
     def getAppSettings(self, id):
-        NotImplementedError()
+        r = get(
+            "{path}/{id}/settings".format(path=self.homeyPath, id=id),
+            token=self.token
+        )
+        return json.loads(r)['result']
 
 
     def getAppSetting(self, id, name):
