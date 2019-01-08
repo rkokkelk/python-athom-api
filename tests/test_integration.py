@@ -1,3 +1,4 @@
+import sys
 import pytest
 import logging
 import configparser
@@ -9,7 +10,23 @@ from athom.common import utils
 from athom.token import Token
 from athom.cloud import AthomCloudAPI
 
-log = logging.getLogger(__name__)
+log = logging.getLogger()
+
+def setup_logging(debug=False):
+
+    default_formatter = logging.Formatter(
+        "%(asctime)s.%(msecs)03d [%(levelname)-.1s]: %(message)s",
+        "%H:%M:%S"
+    )
+
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setFormatter(default_formatter)
+
+    if debug:
+        log.setLevel(logging.DEBUG)
+        ch.setLevel(logging.DEBUG)
+
+    log.addHandler(ch)
 
 class TestIntegration:
 
@@ -31,37 +48,35 @@ class TestIntegration:
         cls.oath = config.get('credentials', 'OATH2TOKEN')
         cls.returnUrl = config.get('credentials', 'callback')
 
-        utils.setup_logging(debug=True)
+        setup_logging(debug=True)
 
     @pytest.mark.integration
     def test_integration(self):
         api = AthomCloudAPI(self.clientId, self.clientSecret, self.returnUrl)
 
         if not api.hasAuthorizationCode():
-            print(api.getLoginUrl())
+            log.warning(api.getLoginUrl())
             api.authenticateWithAuthorizationCode(self.oath)
 
             return
 
         user = api.getUser()
-        print(user)
+        log.info(user)
 
         for role in user.roles:
-            print(role)
-
-        print(user.avatar.small)
-
-        for device in user.devices:
-            print(device)
+            log.info(role)
 
         homey = user.getFirstHomey()
-        print(homey)
-        print(homey.geolocation)
-
-        print(homey.users)
+        log.info(homey)
 
         homeyAPI = homey.authenticate()
 
-        homeyAPI.ManagerSpeechInput.parseSpeech(transcript='foobar')
-        for app in homeyAPI.ManagerApps.getApps():
-            print(app)
+        mApps = homeyAPI.ManagerApps
+        for app in mApps.getApps():
+            log.info(app)
+            try:
+                mApps.getAppSettings(app.id)
+            except:
+                pass
+
+        raise Exception()
