@@ -14,23 +14,16 @@ log = logging.getLogger(__name__)
 TIMEOUT = (4, 10)
 
 
-def post(url, token=None, refresh=True, **kwargs):
 
-    _setup_authorization(token, kwargs)
+def post(url, refresh=True, **kwargs):
+    token = kwargs.get('token', None)
 
     try:
-        r = requests.post(
-            url=url,
-            timeout=TIMEOUT,
+        return _request(
+            requests.post,
+            url,
             **kwargs
         )
-
-        log.debug("POST [%d]: %s", r.status_code, url)
-        return _parse_response(r.status_code, r)
-
-    except (ConnectionError, SSLError) as e:
-        log.critical(e)
-        raise AthomAPIConnectionError(e)
 
     except AthomCloudAuthenticationError as e:
 
@@ -40,26 +33,18 @@ def post(url, token=None, refresh=True, **kwargs):
 
         token.refresh()
 
-        return post(url, token=token, refresh=False, **kwargs)
+        return post(url, refresh=False, **kwargs)
 
 
-def get(url, token=None, refresh=True, **kwargs):
-
-    _setup_authorization(token, kwargs)
+def get(url, refresh=True, **kwargs):
+    token = kwargs.get('token', None)
 
     try:
-        r = requests.get(
-            url=url,
-            timeout=TIMEOUT,
+        return _request(
+            requests.get,
+            url,
             **kwargs
         )
-
-        log.debug("GET  [%d]: %s", r.status_code, url)
-        return _parse_response(r.status_code, r)
-
-    except (ConnectionError, SSLError) as e:
-        log.critical(e)
-        raise AthomAPIConnectionError(e)
 
     except AthomCloudAuthenticationError as e:
 
@@ -69,17 +54,30 @@ def get(url, token=None, refresh=True, **kwargs):
 
         token.refresh()
 
-        return get(url, token=token, refresh=False, **kwargs)
+        return get(url, refresh=False, **kwargs)
 
 
-def _setup_authorization(token, kwargs):
-    headers = kwargs.get('headers', dict())
+def _request(method, url, token=None, **kwargs):
+    headers = kwargs.pop('headers', dict())
 
-    if token is None:
-        return
+    # Verify on None, empty tokens will properly raise error in str(token)
+    if token is not None:
+        headers['authorization'] = "Bearer {}".format(token)
 
-    headers['authorization'] = "Bearer {}".format(token)
-    kwargs['headers'] = headers
+    try:
+        r = method(
+            url=url,
+            timeout=TIMEOUT,
+            headers=headers,
+            **kwargs
+        )
+
+        return _parse_response(r.status_code, r)
+
+    except (ConnectionError, SSLError) as e:
+        error = AthomAPIConnectionError(e)
+        log.critical(error)
+        raise error
 
 
 def _parse_response(status_code, response):
