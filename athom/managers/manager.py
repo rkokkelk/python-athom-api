@@ -12,3 +12,8 @@ class Manager:
 
     def verifyScopeRequired(self, scope):
         return scope in self.requiredScopes
+
+
+    def _verify_id(self, value):
+        if not value:
+            raise ValueError("Expected id to be a string")
