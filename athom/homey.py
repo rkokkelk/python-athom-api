@@ -8,9 +8,9 @@ class HomeyAPI:
         self.ip = ipInternal
         self.token = token
 
-        self.ManagerApps = ManagerApps(homey=self, token=token)
-        self.ManagerSpeechInput = ManagerSpeechInput(homey=self, token=token)
+        self.apps = ManagerApps(homey=self, token=token)
+        self.SpeechInput = ManagerSpeechInput(homey=self, token=token)
 
 
     def forCurrentHomey(self):
-        raise NotImplementedError("HomeyAPI cannot be used locally!")
+        raise NotImplementedError("This function is not supported by this module")
