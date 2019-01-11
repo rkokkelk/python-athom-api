@@ -57,7 +57,6 @@ class TestIntegration:
         if not api.hasAuthorizationCode():
             log.warning(api.getLoginUrl())
             api.authenticateWithAuthorizationCode(self.oath)
-
             return
 
         user = api.getUser()
@@ -71,12 +70,11 @@ class TestIntegration:
 
         homeyAPI = homey.authenticate()
 
-        mApps = homeyAPI.ManagerApps
+        mApps = homeyAPI.apps
         for app in mApps.getApps():
             log.info(app)
-            try:
-                mApps.getAppSettings(app.id)
-            except:
-                pass
+
+        mApps.installFromAppStore('net.weejewel.xboxone')
+        mApps.uninstallApp('net.weejewel.xboxone')
 
         raise Exception()
