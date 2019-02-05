@@ -5,7 +5,7 @@ from athom.models.user import UserSchema
 from athom.storage.localstorage import LocalStorage
 from athom.common.net import get, post
 from athom.common.utils import create_url
-from athom.common.exceptions import AthomCloudAuthenticationError
+from athom.common.exceptions import AthomAPISessionError
 
 log = logging.getLogger(__name__)
 
@@ -80,7 +80,10 @@ class AthomCloudAPI:
 
 
     def isLoggedIn(self):
-        raise NotImplementedError()
+        try:
+            return self.getUser() is not None
+        except AthomAPISessionError:
+            return False
 
 
     def refreshTokens(self, **kwargs):
