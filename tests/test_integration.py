@@ -72,11 +72,11 @@ class TestIntegration:
         homeyAPI = homey.authenticate()
 
         mApps = homeyAPI.ManagerApps
-        for app in mApps.getApps():
+        apps = mApps.getApps()
+
+        for app in apps:
             log.info(app)
-            try:
-                mApps.getAppSettings(app.id)
-            except:
-                pass
+
+        log.info(mApps.getAppSettings(apps[4]))
 
         raise Exception()
