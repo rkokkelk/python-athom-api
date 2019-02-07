@@ -11,7 +11,7 @@ from athom.common.exceptions import AthomCloudAuthenticationError, \
 log = logging.getLogger(__name__)
 
 # Timeout for (connect, read)
-TIMEOUT = (4, 10)
+TIMEOUT = (4, 30)
 
 
 
