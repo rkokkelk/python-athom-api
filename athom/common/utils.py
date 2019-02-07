@@ -2,6 +2,7 @@ import sys
 import logging
 
 from requests import Request
+from urllib.parse import urlparse
 
 log = logging.getLogger(__name__)
 
@@ -28,3 +29,15 @@ def setup_logging(debug=False):
         ch.setLevel(logging.DEBUG)
 
     r_log.addHandler(ch)
+
+
+def parse_callback(callback_url):
+    url = urlparse(callback_url)
+
+    if not url.port:
+        if 'https' in url.scheme:
+            return (url.hostname, 443)
+
+        return (url.hostname, 80)
+
+    return (url.hostname, url.port)

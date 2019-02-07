@@ -3,12 +3,14 @@ import logging
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+from athom.common import utils
+
 log = logging.getLogger(__name__)
 
 oauth = None
 
-def get_webserver(port=8080):
-    address = ('', port)
+def get_webserver(callback):
+    address = utils.parse_callback(callback)
 
     # Ignore logging from http server except critical
     logging.getLogger('http').setLevel(logging.CRITICAL)

@@ -58,6 +58,7 @@ def main():
 
     # Verify if there exists an acive session, if not get one
     if not api.hasAuthorizationCode() or not api.isLoggedIn():
+        oauth = None
         oauth_url = api.getLoginUrl()
 
         log.info("No active session found, opening URL to get OATH token")
@@ -67,7 +68,7 @@ def main():
         webbrowser.open(oauth_url, new=2)
 
         try:
-            server = web.get_webserver()
+            server = web.get_webserver(args.returnURL)
             server.handle_request()
             oauth = web.oauth
             server.server_close()
