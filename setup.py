@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="athom-api",
-    version="0.2.1",
+    version="0.3.0",
     author="Roy K",
     author_email="rkokk@protonmail.com",
     description=("A python module for accessing the Athom Web-API for use with the Athom Homey"),
