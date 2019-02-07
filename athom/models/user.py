@@ -1,9 +1,13 @@
+import logging
+
 from athom.models.role import RoleSchema
 from athom.models.homey import HomeySchema
 from athom.models.avatar import AvatarSchema
 from athom.models.userdevice import UserDeviceSchema
 
 from marshmallow import Schema, fields, post_load, EXCLUDE
+
+log = logging.getLogger(__name__)
 
 class User:
 
@@ -49,6 +53,14 @@ class User:
             return self.homeys[0]
 
         raise LookupError()
+
+    def _setDelegationToken(self, token):
+        """
+        OAUTH token is required by all homey objects, in order to use
+        to get delegation token for access to homeyAPI
+        """
+        for homey in self.homeys:
+            homey.delegationToken = token
 
 
 class UserSchema(Schema):

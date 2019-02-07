@@ -72,6 +72,9 @@ class AthomCloudAPI:
         response = get(url, token=self.token, headers=headers)
         schema = UserSchema()
         user = schema.loads(response)
+
+        # delegationToken is required for homeys/homeyAPI
+        user._setDelegationToken(self.token)
         return user
 
 
