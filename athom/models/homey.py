@@ -3,6 +3,7 @@ import logging
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
 from athom.homey import HomeyAPI
+from athom.common.net import get, post
 
 log = logging.getLogger(__name__)
 
@@ -17,24 +18,43 @@ class Homey:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+        # delegationToken is required for homeys/homeyAPI
+        self.delegationToken = None
+        #self.apiVersion = int(self.softwareVersion.split('.')[0])
 
     def __str__(self):
         return "[{self._id}] {self.name} ({self.softwareVersion})".format(self=self)
 
 
-    def authenticate(self, token=None, strategy=None):
+    def authenticate(self, token=None, strategy='localSecure'):
 
-        if strategy and strategy != "cloud":
-            message = "This module can only be used in cloud modus"
-            log.error(message)
-            raise ValueError(message)
+        # For Homey v1, auth token is given in json response for getting Homey info
+        if self.apiVersion == 1:
+            if not self.token and not token:
+                message = "A token is required in order to access HomeyAPI for Homey version 1"
+                log.error(message)
+                raise ValueError(message)
 
-        if not token and not self.token:
-            message = "A token is required in order to access HomeyAPI"
-            log.error(message)
-            raise ValueError(message)
+            url = "http://{self.ipInternal}".format(self=self)
+            return HomeyAPI(url, token=self.token)
 
-        return HomeyAPI(self.ipInternal, token=self.token)
+        # For Homey v2+, auth token is got via delegation
+        url = 'https://api.athom.com/delegation/token?audience=homey'
+
+        data = {
+            'audience': 'homey'
+        }
+
+        self.token = post(url, json=data, token=self.delegationToken).replace('"', '')
+
+        if strategy == 'cloud':
+            url = self.remoteUrl
+        elif strategy == 'localSecure':
+            url = self.localUrlSecure
+        else:
+            url = self.localUrl
+
+        return HomeyAPI(url, token=self.token)
 
 
 class HomeyUserSchema(Schema):
@@ -66,7 +86,8 @@ class HomeySchema(Schema):
 
     class Meta:
         additional = ['_id', 'name', 'ipInternal', 'ipExternal', 'softwareVersion',
-                      'geolocation', 'language', 'state', 'role', 'token', 'apps']
+                      'geolocation', 'language', 'state', 'role', 'token', 'apps',
+                      'apiVersion', 'localUrl', 'localUrlSecure', 'remoteUrl']
         unknown = EXCLUDE
 
     @post_load
