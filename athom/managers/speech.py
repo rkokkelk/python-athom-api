@@ -7,7 +7,7 @@ class ManagerSpeechInput(Manager):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.homeyPath = "http://{homey.ip}/api/manager/speech-input".format(homey=self.homey)
+        self.homeyPath = "{homey.url}/api/manager/speech-input".format(homey=self.homey)
         self.requiredScopes = scopes.HOMEY_SPEECH
 
 

@@ -10,7 +10,7 @@ class ManagerApps(Manager):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.homeyPath = "http://{homey.ip}/api/manager/apps/app".format(homey=self.homey)
+        self.homeyPath = "{homey.url}/api/manager/apps/app".format(homey=self.homey)
         self.requiredScopes = [
             scopes.HOMEY_APP,
             scopes.HOMEY_APP_READONLY,
@@ -20,8 +20,9 @@ class ManagerApps(Manager):
 
     def getApps(self):
         r = get(self.homeyPath, token=self.token)
+        print(r)
         schema = AppsSchema(many=True)
-        return schema.load(json.loads(r)['result'].values())
+        return schema.load(json.loads(r).values())
 
 
     def getApp(self, id):
@@ -30,7 +31,7 @@ class ManagerApps(Manager):
             token=self.token
         )
         schema = AppsSchema()
-        return schema.load(json.loads(r)['result'])
+        return schema.loads(r)
 
 
     def updateApp(self, id, app):
@@ -55,10 +56,10 @@ class ManagerApps(Manager):
 
     def getAppSettings(self, id):
         r = get(
-            "{path}/{id}/settings".format(path=self.homeyPath, id=id),
+            "{path}/{id}/setting".format(path=self.homeyPath, id=id),
             token=self.token
         )
-        return json.loads(r)['result']
+        return json.loads(r)
 
 
     def getAppSetting(self, id, name):
