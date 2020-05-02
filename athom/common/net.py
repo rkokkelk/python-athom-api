@@ -14,15 +14,17 @@ log = logging.getLogger(__name__)
 class AthomSession(Session):
 
     def __init__(self, **kwargs):
-        self.token = kwargs.pop('token')
+        self.token = kwargs.pop('token', None)
         self.base = kwargs.pop('base', '')
 
         super().__init__(**kwargs)
 
     def prepare_request(self, request):
         request.url = self.base + request.url
-        request.headers['authorization'] = f"Bearer {self.token}"
         request.timeout = (4, 30)  # Timeout for (connect, read)
+
+        if self.token:
+            request.headers['authorization'] = f"Bearer {self.token}"
 
         return super().prepare_request(request)
 
