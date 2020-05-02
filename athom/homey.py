@@ -13,11 +13,11 @@ class HomeyAPI:
         self.token = self.ManagerUsers.login(token)
 
         # Ensure to get a valid Session
-        self.ManagerSessions = ManagerSessions(homey=self, token=self.token)
-        self.ManagerSessions.getSessionMe()
+        #self.ManagerSessions = ManagerSessions(homey=self, token=self.token)
+        #self.ManagerSessions.getSessionMe()
 
-        self.ManagerApps = ManagerApps(homey=self, token=self.token)
-        self.ManagerSpeechInput = ManagerSpeechInput(homey=self, token=self.token)
+        #self.ManagerApps = ManagerApps(homey=self, token=self.token)
+        #self.ManagerSpeechInput = ManagerSpeechInput(homey=self, token=self.token)
 
 
     def forCurrentHomey(self):
