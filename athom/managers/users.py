@@ -2,7 +2,6 @@ import json
 import logging
 
 from athom.common import scopes
-from athom.common.net import delete, get, post
 from athom.managers.manager import Manager
 
 log = logging.getLogger(__name__)
@@ -16,13 +15,11 @@ class ManagerUsers(Manager):
 
 
     def login(self, delegationToken):
-        url = self.homeyPath + '/login'
-
         data = {
             'token': delegationToken
         }
 
-        r = post(url, json=data).replace('"', '')
+        r = self.s.post('/login', json=data).replace('"', '')
         self.token = r
         return r
 
