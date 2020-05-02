@@ -19,7 +19,7 @@ class ManagerSessions(Manager):
         return schema.loads(r)
 
     def getSessionMe(self):
-        r = self.s.get('/session/me', token=self.token)
+        r = self.s.get('/session/me')
         schema = SessionSchema()
         return schema.loads(r)
 
