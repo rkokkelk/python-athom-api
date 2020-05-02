@@ -19,7 +19,7 @@ class Update:
 
 
     def __str__(self):
-        return "Update {self.version}".format(self=self)
+        return f"Update {self.version}"
 
 
     def __eq__(self, other):

@@ -9,7 +9,7 @@ class Apps:
 
 
     def __str__(self):
-        return "{self.id}".format(self=self)
+        return f"{self.id}"
 
 
 class AppsSchema(Schema):

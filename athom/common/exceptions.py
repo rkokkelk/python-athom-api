@@ -29,7 +29,7 @@ class AthomAPIError(Exception):
             self.description = 'Unknown error'
 
     def __str__(self):
-        return "[{self.code}] {self.error}: {self.description}".format(self=self)
+        return f"[{self.code}] {self.error}: {self.description}"
 
 
 class AthomCloudAuthenticationError(AthomAPIError):

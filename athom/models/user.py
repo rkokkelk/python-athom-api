@@ -22,7 +22,7 @@ class User:
             setattr(self, key, value)
 
     def __str__(self):
-        return "[{self._id}] {self.firstname} {self.lastname}".format(self=self)
+        return f"[{self._id}] {self.firstname} {self.lastname}"
 
 
     def getDevice(self, d_id):

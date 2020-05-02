@@ -15,7 +15,7 @@ class Session:
             setattr(self, key, value)
 
     def __str__(self):
-        return "Session [{self.id}] {self.type}".format(self=self)
+        return f"Session [{self.id}] {self.type}"
 
 
     def hasScope(self, scope):

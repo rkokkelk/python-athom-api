@@ -11,7 +11,7 @@ class UserDevice:
             setattr(self, key, value)
 
     def __str__(self):
-        return "[{self._id}] {self.name} ({self.platform})".format(self=self)
+        return f"[{self._id}] {self.name} ({self.platform})"
 
 
 class UserDeviceSchema(Schema):

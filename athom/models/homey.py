@@ -25,7 +25,7 @@ class Homey:
         self.s = AthomSession()
 
     def __str__(self):
-        return "[{self._id}] {self.name} ({self.softwareVersion})".format(self=self)
+        return f"[{self._id}] {self.name} ({self.softwareVersion})"
 
 
     def _setDelegationToken(self, token):
@@ -41,7 +41,7 @@ class Homey:
                 log.error(message)
                 raise ValueError(message)
 
-            url = "http://{self.ipInternal}".format(self=self)
+            url = f"http://{self.ipInternal}"
             return HomeyAPI(url, token=self.token)
 
         # For Homey v2+, auth token is got via delegation

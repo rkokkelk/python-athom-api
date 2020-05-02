@@ -10,7 +10,7 @@ class Role:
             setattr(self, key, value)
 
     def __str__(self):
-        return "[{self._id}] {self.name}".format(self=self)
+        return f"[{self._id}] {self.name}"
 
 
 class RoleSchema(Schema):

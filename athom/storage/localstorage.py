@@ -43,7 +43,7 @@ class LocalStorage:
                 return json.load(f)
 
         except (FileNotFoundError, JSONDecodeError) as e:
-            message = "Failed to retrieve token from: {self.path}".format(self=self)
+            message = f"Failed to retrieve token from: {self.path}"
 
             log.error(message)
             raise AthomTokenDBError(message)
