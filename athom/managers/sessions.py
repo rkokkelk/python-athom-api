@@ -9,9 +9,7 @@ log = logging.getLogger(__name__)
 class ManagerSessions(Manager):
 
     def __init__(self, **kwargs):
-        super().__init__(
-            base=f"http://{self.homey.url}/api/manager/sessions",
-            **kwargs)
+        super().__init__(base='/sessions', **kwargs)
 
         self.requiredScopes = []
 

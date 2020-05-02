@@ -7,10 +7,7 @@ from athom.models.managers.apps import Apps, AppsSchema
 class ManagerDevices(Manager):
 
     def __init__(self, **kwargs):
-        super().__init__(
-            base=f"http://{self.homey.ip}/api/manager/devices",
-            **kwargs
-        )
+        super().__init__(base='/devices', **kwargs)
 
         self.requiredScopes = [
             scopes.HOMEY_DEVICE,

@@ -10,9 +10,8 @@ log = logging.getLogger(__name__)
 class ManagerUsers(Manager):
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(base='/users', **kwargs)
 
-        self.homeyPath = "{homey.url}/api/manager/users".format(homey=self.homey)
         self.requiredScopes = []
 
 

@@ -8,6 +8,8 @@ class Manager:
         self.token = token
         self.requiredScopes = []
 
+        kwargs['base'] = f"{self.homey.url}/api/manager" + kwargs['base']
+
         # Set request.Session for API interaction
         self.s = AthomSession(token=self.token, **kwargs)
 

@@ -5,10 +5,7 @@ from athom.managers.manager import Manager
 class ManagerSpeechInput(Manager):
 
     def __init__(self, **kwargs):
-        super().__init__(
-            base=f"http://{self.homey.ip}/api/manager/speech-input",
-            **kwargs
-        )
+        super().__init__(base='/speech-input', **kwargs)
 
         self.requiredScopes = scopes.HOMEY_SPEECH
 
