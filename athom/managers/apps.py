@@ -1,17 +1,16 @@
 import json
 
 from athom.common import scopes
-from athom.common.net import delete, get, post, put
 from athom.managers.manager import Manager
 from athom.models.managers.apps import Apps, AppsSchema
 
 class ManagerApps(Manager):
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.path = "http://{homey.ip}/api/manager/apps".format(homey=self.homey)
-        self.storePath = "http://{homey.ip}/api/manager/apps/store/".format(homey=self.homey)
+        super().__init__(
+            base=f"http://{self.homey.ip}/api/manager/apps",
+            **kwargs
+        )
 
         self.requiredScopes = [
             scopes.HOMEY_APP,
@@ -21,10 +20,7 @@ class ManagerApps(Manager):
 
 
     def getApps(self):
-        r = get(
-            "{path}/app/".format(path=self.path),
-            token=self.token
-        )
+        r = self.s.get('/app/')
         schema = AppsSchema(many=True)
         return schema.load(json.loads(r).values())
 
@@ -32,117 +28,72 @@ class ManagerApps(Manager):
     def getApp(self, id):
         self._verify_id(id)
 
-        r = get(
-            "{path}/app/{id}".format(path=self.path, id=id),
-            token=self.token
-        )
+        r = self.s.get(f"/app/{id}")
         schema = AppsSchema()
         return schema.loads(r)
 
 
     def updateApp(self, id, app):
         self._verify_id(id)
-
-        put(
-            "{path}/app/{id}".format(path=self.path, id=id),
-            token=self.token
-        )
+        self.s.put(f"/app/{id}")
 
 
     def uninstallApp(self, id, purgeSettings=True):
         self._verify_id(id)
-
-        r = delete(
-            "{path}/app/{id}".format(path=self.path, id=id),
-            data={'purgeSettings': purgeSettings},
-            token=self.token
-        )
+        self.s.delete(f"/app/{id}", data={'purgeSettings': purgeSettings})
 
 
     def getAppStd(self, id):
         self._verify_id(id)
 
-        r = post(
-            "{path}/app/{id}/crashlog".format(path=self.path, id=id),
-            token=self.token
-        )
-        return json.loads(r)['result']
+        r = self.s.post(f"/app/{id}/crashlog")
+        return r.json().get('result')
 
 
     def getAppSettings(self, id):
         self._verify_id(id)
 
-        r = get(
-            "{path}/app/{id}/settings".format(path=self.path, id=id),
-            token=self.token
-        )
-        return json.loads(r)
+        r = self.s.get(f"/app/{id}/settings")
+        return r.json()
 
 
     def getAppSetting(self, id, name):
         self._verify_id(id)
 
-        r = get(
-            "{path}/app/{id}/settings/{name}".format(path=self.path, id=id, name=name),
-            token=self.token
-        )
-        return json.loads(r)['result']
+        r = self.s.get(f"/app/{id}/settings/{name}")
+        return r.json().get('result')
 
 
     def setAppsetting(self, id, name, value):
         self._verify_id(id)
-
-        put(
-            "{path}/app/{id}/settings/{name}".format(path=self.path, id=id, name=name),
-            data={'value': value},
-            token=self.token
-        )
+        self.s.put(f"/app/{id}/settings/{name}", data={'value': value})
 
 
     def unsetAppSetting(self, id, name):
         self._verify_id(id)
-
-        delete(
-            "{path}/app/{id}/settings/{name}".format(path=self.path, id=id, name=name),
-            token=self.token
-        )
+        self.s.delete(f"/app/{id}/settings/{name}")
 
 
     def restartApp(self, id):
         self._verify_id(id)
-
-        post(
-            "{path}/app/{id}/restart".format(path=self.path, id=id),
-            token=self.token
-        )
+        self.s.post(f"/app/{id}/restart")
 
 
     def enableApp(self, id):
         self._verify_id(id)
-
-        put(
-            "{path}/app/{id}/enable".format(path=self.path, id=id),
-            token=self.token
-        )
+        self.s.put(f"/app/{id}/enable")
 
 
     def disableApp(self, id):
         self._verify_id(id)
-
-        put(
-            "{path}/app/{id}/disable".format(path=self.path, id=id),
-            token=self.token
-        )
+        self.s.put(f"/app/{id}/disable")
 
 
     def getAppLocales(self, id):
         self._verify_id(id)
 
-        r = get(
-            "{path}/app/{id}/locale".format(path=self.path, id=id),
-            token=self.token
-        )
-        return json.loads(r)['result']
+        r = self.s.get(f"/app/{id}/locale")
+        return r.json().get('result')
 
 
     def installFromAppStore(self, id, channel='stable'):
@@ -150,12 +101,5 @@ class ManagerApps(Manager):
         if channel not in ['stable', 'beta', 'alpha']:
             raise ValueError("Expected channel to be one of stable, beta, alpha")
 
-        data = {'id': id, 'channel': channel}
-
-        r = post(
-            "{path}/store/".format(path=self.path),
-            json=data,
-            token=self.token
-        )
-
-        return json.loads(r)['result']
+        r = self.s.post('/store/', json={'id': id, 'channel': channel})
+        return r.json().get('result')
