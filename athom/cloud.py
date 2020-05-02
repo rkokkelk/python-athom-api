@@ -5,7 +5,7 @@ from athom.models.user import UserSchema
 from athom.storage.localstorage import LocalStorage
 from athom.common.net import get, post
 from athom.common.utils import create_url
-from athom.common.exceptions import AthomCloudAuthenticationError
+from athom.common.exceptions import AthomAPISessionError
 
 log = logging.getLogger(__name__)
 
@@ -72,6 +72,9 @@ class AthomCloudAPI:
         response = get(url, token=self.token, headers=headers)
         schema = UserSchema()
         user = schema.loads(response)
+
+        # delegationToken is required for homeys/homeyAPI
+        user._setDelegationToken(self.token)
         return user
 
 
@@ -80,7 +83,10 @@ class AthomCloudAPI:
 
 
     def isLoggedIn(self):
-        raise NotImplementedError()
+        try:
+            return self.getUser() is not None
+        except AthomAPISessionError:
+            return False
 
 
     def refreshTokens(self, **kwargs):

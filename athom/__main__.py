@@ -9,6 +9,7 @@ import webbrowser
 
 from textwrap import dedent
 
+from athom.common import web
 from athom.cloud import AthomCloudAPI
 
 default_formatter = logging.Formatter(
@@ -56,7 +57,7 @@ def main():
     api = AthomCloudAPI(args.clientId, args.clientSecret, args.returnURL)
 
     # Verify if there exists an acive session, if not get one
-    if not api.hasAuthorizationCode():
+    if not api.hasAuthorizationCode() or not api.isLoggedIn():
         oauth_url = api.getLoginUrl()
 
         log.info("No active session found, opening URL to get OATH token")
@@ -65,9 +66,26 @@ def main():
         log.info("OATH URL: %s", oauth_url)
         webbrowser.open(oauth_url, new=2)
 
-        log.info("Enter OATH token")
-        oath = input("OATH token: ")
-        api.authenticateWithAuthorizationCode(oath)
+        try:
+            server = web.get_webserver()
+            server.handle_request()
+            oauth = web.oauth
+            server.server_close()
+
+        except:
+            log.warning("Failed to start webserver for catching OAUTH token")
+
+            log.info("Enter OATH token")
+            oauth = input("OATH token: ")
+
+        finally:
+            if not oauth:
+                log.critical("Failed to get OAUTH token, exiting")
+                exit(1)
+
+            log.info("Got OAUTH token, authenticating!")
+            api.authenticateWithAuthorizationCode(oauth)
+
 
     # Start interactive console
     # TODO: extend symbolic table to include all module classes/functions

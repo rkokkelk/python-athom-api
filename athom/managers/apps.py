@@ -26,7 +26,7 @@ class ManagerApps(Manager):
             token=self.token
         )
         schema = AppsSchema(many=True)
-        return schema.load(json.loads(r)['result'].values())
+        return schema.load(json.loads(r).values())
 
 
     def getApp(self, id):
@@ -37,7 +37,7 @@ class ManagerApps(Manager):
             token=self.token
         )
         schema = AppsSchema()
-        return schema.load(json.loads(r)['result'])
+        return schema.loads(r)
 
 
     def updateApp(self, id, app):
@@ -76,7 +76,7 @@ class ManagerApps(Manager):
             "{path}/app/{id}/settings".format(path=self.path, id=id),
             token=self.token
         )
-        return json.loads(r)['result']
+        return json.loads(r)
 
 
     def getAppSetting(self, id, name):

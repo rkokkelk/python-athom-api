@@ -70,11 +70,12 @@ class TestIntegration:
 
         homeyAPI = homey.authenticate()
 
-        mApps = homeyAPI.apps
-        for app in mApps.getApps():
+        mApps = homeyAPI.ManagerApps
+        apps = mApps.getApps()
+
+        for app in apps:
             log.info(app)
 
-        mApps.installFromAppStore('net.weejewel.xboxone')
-        mApps.uninstallApp('net.weejewel.xboxone')
+        log.info(mApps.getAppSettings(apps[4]))
 
         raise Exception()
