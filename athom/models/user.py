@@ -60,7 +60,7 @@ class User:
         to get delegation token for access to homeyAPI
         """
         for homey in self.homeys:
-            homey.delegationToken = token
+            homey._setDelegationToken(token)
 
 
 class UserSchema(Schema):

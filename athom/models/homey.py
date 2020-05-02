@@ -3,7 +3,7 @@ import logging
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
 from athom.homey import HomeyAPI
-from athom.common.net import get, post
+from athom.common.net import AthomSession
 
 log = logging.getLogger(__name__)
 
@@ -11,7 +11,6 @@ class Homey:
 
     def __init__(self, _id=None, token=None, **kwargs):
         self._id = _id
-        self.token = token
         self.name = kwargs.get('name', None)
         self.ipInternal = kwargs.get('ipInternal', None)
 
@@ -22,9 +21,16 @@ class Homey:
         self.delegationToken = None
         #self.apiVersion = int(self.softwareVersion.split('.')[0])
 
+        # Set request.Session for API interaction
+        self.s = AthomSession()
+
     def __str__(self):
         return "[{self._id}] {self.name} ({self.softwareVersion})".format(self=self)
 
+
+    def _setDelegationToken(self, token):
+        self.delegationToken = token
+        self.s = AthomSession(token=token)
 
     def authenticate(self, token=None, strategy='localSecure'):
 
@@ -45,7 +51,7 @@ class Homey:
             'audience': 'homey'
         }
 
-        self.token = post(url, json=data, token=self.delegationToken).replace('"', '')
+        self.token = self.s.post(url, json=data).replace('"', '')
 
         if strategy == 'cloud':
             url = self.remoteUrl
