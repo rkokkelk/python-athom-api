@@ -20,7 +20,9 @@ default_formatter = logging.Formatter(
 banner = """\
          Welcome to the Athom API console. The following variables are available:
 
-         api:    AthomAPI object\
+         api:    AthomAPI object
+         user:   User object
+         homey:  User first Homey device
          """
 
 log = logging.getLogger('athom')
@@ -86,6 +88,8 @@ def main():
             log.info("Got OAUTH token, authenticating!")
             api.authenticateWithAuthorizationCode(oauth)
 
+    user = api.getUser()
+
 
     # Start interactive console
     # TODO: extend symbolic table to include all module classes/functions
@@ -95,7 +99,10 @@ def main():
     readline.parse_and_bind('tab: complete')
 
     console = code.InteractiveConsole()
+
     console.locals['api'] = api
+    console.locals['user'] = user
+    console.locals['homey'] = user.getFirstHomey()
     console.interact(banner=dedent(banner))
 
 
