@@ -1,16 +1,16 @@
 import json
 
 from athom.common import scopes
-from athom.common.net import delete, get, post, put
 from athom.managers.manager import Manager
 from athom.models.managers.apps import Apps, AppsSchema
 
 class ManagerDevices(Manager):
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.path = "http://{homey.ip}/api/manager/devices".format(homey=self.homey)
+        super().__init__(
+            base=f"http://{self.homey.ip}/api/manager/devices",
+            **kwargs
+        )
 
         self.requiredScopes = [
             scopes.HOMEY_DEVICE,
