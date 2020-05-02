@@ -1,18 +1,21 @@
+from athom.common.net import AthomSession
+
+
 class Manager:
 
-    def __init__(self, homey=None, token=None):
+    def __init__(self, homey=None, token=None, **kwargs):
         self.homey = homey
         self.token = token
         self.requiredScopes = []
 
+        # Set request.Session for API interaction
+        self.s = AthomSession(token=self.token, **kwargs)
 
     def getScopes(self):
         return self.requiredScopes
 
-
     def verifyScopeRequired(self, scope):
         return scope in self.requiredScopes
-
 
     def _verify_id(self, value):
         if not value:
