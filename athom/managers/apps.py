@@ -2,7 +2,8 @@ import json
 
 from athom.common import scopes
 from athom.managers.manager import Manager
-from athom.models.managers.apps import Apps, AppsSchema
+from athom.models.managers.apps import AppsSchema
+
 
 class ManagerApps(Manager):
 
@@ -15,88 +16,98 @@ class ManagerApps(Manager):
             scopes.HOMEY_APP_CONTROL
         ]
 
-
     def getApps(self):
         r = self.s.get('/app/')
         schema = AppsSchema(many=True)
         return schema.load(json.loads(r).values())
 
-
-    def getApp(self, id):
+    def getApp(self, **opts):
+        id = opts.get('id')
         self._verify_id(id)
 
         r = self.s.get(f"/app/{id}")
         schema = AppsSchema()
         return schema.loads(r)
 
-
-    def updateApp(self, id, app):
+    def updateApp(self, **opts):
+        id = opts.get('id')
         self._verify_id(id)
         self.s.put(f"/app/{id}")
 
-
-    def uninstallApp(self, id, purgeSettings=True):
+    def uninstallApp(self, **opts):
+        id = opts.pop('id')
         self._verify_id(id)
-        self.s.delete(f"/app/{id}", data={'purgeSettings': purgeSettings})
+        self.s.delete(f"/app/{id}", data=opts)
 
-
-    def getAppStd(self, id):
+    def getAppStd(self, **opts):
+        id = opts.pop('id')
         self._verify_id(id)
 
-        r = self.s.post(f"/app/{id}/crashlog")
+        r = self.s.post(f"/app/{id}/crashlog", data=opts)
         return r.json().get('result')
 
-
-    def getAppSettings(self, id):
+    def getAppSettings(self, **opts):
+        id = opts.get('id')
         self._verify_id(id)
 
         r = self.s.get(f"/app/{id}/settings")
         return r.json()
 
-
-    def getAppSetting(self, id, name):
+    def getAppSetting(self, **opts):
+        id = opts.get('id')
+        name = opts.get('name')
         self._verify_id(id)
 
         r = self.s.get(f"/app/{id}/settings/{name}")
         return r.json().get('result')
 
+    def setAppsetting(self, **opts):
+        id = opts.pop('id')
+        name = opts.pop('name')
 
-    def setAppsetting(self, id, name, value):
         self._verify_id(id)
-        self.s.put(f"/app/{id}/settings/{name}", data={'value': value})
+        self.s.put(f"/app/{id}/settings/{name}", data=opts)
 
-
-    def unsetAppSetting(self, id, name):
+    def unsetAppSetting(self, **opts):
+        id = opts.get('id')
+        name = opts.get('name')
         self._verify_id(id)
         self.s.delete(f"/app/{id}/settings/{name}")
 
-
-    def restartApp(self, id):
+    def restartApp(self, **opts):
+        id = opts.get('id')
         self._verify_id(id)
         self.s.post(f"/app/{id}/restart")
 
+    def garbageCollectApp(self, **opts):
+        raise NotImplementedError()
 
-    def enableApp(self, id):
+    def enableApp(self, **opts):
+        id = opts.get('id')
         self._verify_id(id)
         self.s.put(f"/app/{id}/enable")
 
-
-    def disableApp(self, id):
+    def disableApp(self, **opts):
+        id = opts.get('id')
         self._verify_id(id)
         self.s.put(f"/app/{id}/disable")
 
-
-    def getAppLocales(self, id):
+    def getAppLocales(self, **opts):
+        id = opts.get('id')
         self._verify_id(id)
 
         r = self.s.get(f"/app/{id}/locale")
         return r.json().get('result')
 
-
-    def installFromAppStore(self, id, channel='stable'):
+    def installFromAppStore(self, **opts):
+        id = opts.get('id')
         self._verify_id(id)
-        if channel not in ['stable', 'beta', 'alpha']:
+
+        if opts.get('channel') not in ['stable', 'beta', 'alpha']:
             raise ValueError("Expected channel to be one of stable, beta, alpha")
 
-        r = self.s.post('/store/', json={'id': id, 'channel': channel})
+        r = self.s.post('/store/', json=opts)
         return r.json().get('result')
+
+    def destroy():
+        raise NotImplementedError()
