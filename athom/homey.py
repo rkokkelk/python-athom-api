@@ -2,6 +2,7 @@ from athom.managers.apps import ManagerApps
 from athom.managers.users import ManagerUsers
 from athom.managers.sessions import ManagerSessions
 from athom.managers.speechInput import ManagerSpeechInput
+from athom.managers.speechOutput import ManagerSpeechOutput
 
 
 class HomeyAPI:
@@ -22,6 +23,7 @@ class HomeyAPI:
         self.apps = ManagerApps(**manager_options)
         self.session = ManagerSessions(**manager_options)
         self.speechInput = ManagerSpeechInput(**manager_options)
+        self.speechOutput = ManagerSpeechOutput(**manager_options)
 
     def forCurrentHomey(self):
         raise NotImplementedError("This function is not supported by this module")
