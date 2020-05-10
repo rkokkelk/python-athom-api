@@ -55,7 +55,7 @@ class AthomSession(Session):
     def _parse_response(self, status_code, response):
         text = response.text
 
-        if status_code == 200:
+        if status_code in range(200, 299):
             return text
 
         if status_code in (400, 401):
