@@ -12,7 +12,7 @@ class HomeyAPI:
         # Use delegationToken to create sessionToken to access API
         self.users = ManagerUsers(homey=self)
         # Ensure to get a valid Session
-        self.token = self.ManagerUsers.login(token)
+        self.token = self.users.login(token)
 
         manager_options = {
             'homey': self,
