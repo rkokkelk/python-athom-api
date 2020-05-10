@@ -1,7 +1,7 @@
 from athom.managers.apps import ManagerApps
 from athom.managers.users import ManagerUsers
 from athom.managers.sessions import ManagerSessions
-from athom.managers.speech import ManagerSpeechInput
+from athom.managers.speechInput import ManagerSpeechInput
 
 
 class HomeyAPI:
