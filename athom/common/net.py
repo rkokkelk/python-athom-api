@@ -56,7 +56,7 @@ class AthomSession(Session):
         text = response.text
 
         if status_code in range(200, 299):
-            return text
+            return response
 
         if status_code in (400, 401):
             error = AthomCloudAuthenticationError(text)

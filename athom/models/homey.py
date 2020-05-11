@@ -51,7 +51,7 @@ class Homey:
             'audience': 'homey'
         }
 
-        self.token = self.s.post(url, json=data).replace('"', '')
+        self.token = self.s.post(url, json=data).text.replace('"', '')
 
         if strategy == 'cloud':
             url = self.remoteUrl

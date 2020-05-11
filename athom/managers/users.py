@@ -19,7 +19,7 @@ class ManagerUsers(Manager):
             'token': delegationToken
         }
 
-        r = self.s.post('/login', json=data).replace('"', '')
+        r = self.s.post('/login', json=data).text.replace('"', '')
         self.token = r
         return r
 
