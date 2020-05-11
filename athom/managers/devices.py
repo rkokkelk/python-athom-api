@@ -1,8 +1,8 @@
-import json
-
 from athom.common import scopes
 from athom.managers.manager import Manager
-from athom.models.managers.apps import Apps, AppsSchema
+from athom.models.managers.devices import DeviceSchema
+from athom.models.managers.capabilities import CapabilitySchema
+
 
 class ManagerDevices(Manager):
 
@@ -15,37 +15,45 @@ class ManagerDevices(Manager):
             scopes.HOMEY_DEVICE_CONTROL
         ]
 
-
     def getDevices(self):
-        raise NotImplementedError()
+        r = self.s.get('/device/')
+        schema = DeviceSchema(many=True)
+        return schema.load(r.json().values())
 
+    def getDevice(self, **opts):
+        id = opts.get('id')
+        r = self.s.get(f'/device/{id}')
+        return DeviceSchema().load(r.json())
 
-    def getDevice(self, id):
-        raise NotImplementedError()
+    def updateDevice(self, **opts):
+        id = opts.get('id')
+        return self.s.put(f'/device/{id}')
 
+    def deleteDevice(self, **opts):
+        id = opts.get('id')
+        return self.s.delete(f'/device/{id}')
 
-    def updateDevice(self, id, device):
-        raise NotImplementedError()
+    def setCapabilityValue(self, **opts):
+        deviceId = opts.pop('deviceId')
+        capabilityId = opts.pop('capabilityId')
+        return self.s.put(f'/device/{deviceId}/capability/{capabilityId}', json=opts)
 
+    def getDeviceSettingsObj(self, **opts):
+        id = opts.get('id')
+        return self.s.get(f'/device/{id}/settings_obj')
 
-    def deletDevice(self, id):
-        raise NotImplementedError()
+    def setDeviceSettings(self, **opts):
+        id = opts.pop('id')
+        return self.s.put(f'/device/{id}/settings', json=opts)
 
+    def getCapabilities(self, **opts):
+        r = self.s.get('/capability', params=opts)
+        schema = CapabilitySchema(many=True)
+        return schema.load(r.json())
 
-    def setCapabilityValue(self, deviceId, capabilityId, value, **kwargs):
-        raise NotImplementedError()
+    def getCapability(self, **opts):
+        id = opts.get('id')
+        uri = opts.get('uri')
 
-    def getDeviceSettingsObj(self, id):
-        raise NotImplementedError()
-
-
-    def setDeviceSettings(self, id, settings):
-        raise NotImplementedError()
-
-
-    def getCapabilities(self):
-        raise NotImplementedError()
-
-
-    def getCapability(self, uri, id):
-        raise NotImplementedError()
+        r = self.s.get(f'/capability/{uri}/{id}')
+        return CapabilitySchema().load(r.json())
