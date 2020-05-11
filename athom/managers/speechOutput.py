@@ -1,5 +1,3 @@
-import json
-
 from athom.common import scopes
 from athom.managers.manager import Manager
 from athom.models.managers.voice import VoiceSchema
@@ -21,7 +19,7 @@ class ManagerSpeechOutput(Manager):
     def getVoices(self, **opts):
         r = self.s.get('/voice/', params=opts)
         schema = VoiceSchema(many=True)
-        return schema.load(json.loads(r).values())
+        return schema.load(r.json())
 
     def getVoice(self, **opts):
         id = opts.get('id')

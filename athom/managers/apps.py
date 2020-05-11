@@ -1,5 +1,3 @@
-import json
-
 from athom.common import scopes
 from athom.managers.manager import Manager
 from athom.models.managers.apps import AppsSchema
@@ -19,31 +17,30 @@ class ManagerApps(Manager):
     def getApps(self):
         r = self.s.get('/app/')
         schema = AppsSchema(many=True)
-        return schema.load(json.loads(r).values())
+        return schema.load(r.json())
 
     def getApp(self, **opts):
         id = opts.get('id')
         self._verify_id(id)
 
         r = self.s.get(f"/app/{id}")
-        schema = AppsSchema()
-        return schema.loads(r)
+        return AppsSchema().loads(r.json())
 
     def updateApp(self, **opts):
         id = opts.get('id')
         self._verify_id(id)
-        self.s.put(f"/app/{id}")
+        return self.s.put(f"/app/{id}")
 
     def uninstallApp(self, **opts):
         id = opts.pop('id')
         self._verify_id(id)
-        self.s.delete(f"/app/{id}", data=opts)
+        return self.s.delete(f"/app/{id}", json=opts)
 
     def getAppStd(self, **opts):
         id = opts.pop('id')
         self._verify_id(id)
 
-        r = self.s.post(f"/app/{id}/crashlog", data=opts)
+        r = self.s.post(f"/app/{id}/crashlog", json=opts)
         return r.json().get('result')
 
     def getAppSettings(self, **opts):
@@ -66,18 +63,18 @@ class ManagerApps(Manager):
         name = opts.pop('name')
 
         self._verify_id(id)
-        self.s.put(f"/app/{id}/settings/{name}", data=opts)
+        return self.s.put(f"/app/{id}/settings/{name}", json=opts)
 
     def unsetAppSetting(self, **opts):
         id = opts.get('id')
         name = opts.get('name')
         self._verify_id(id)
-        self.s.delete(f"/app/{id}/settings/{name}")
+        return self.s.delete(f"/app/{id}/settings/{name}")
 
     def restartApp(self, **opts):
         id = opts.get('id')
         self._verify_id(id)
-        self.s.post(f"/app/{id}/restart")
+        return self.s.post(f"/app/{id}/restart")
 
     def garbageCollectApp(self, **opts):
         raise NotImplementedError()
@@ -85,12 +82,12 @@ class ManagerApps(Manager):
     def enableApp(self, **opts):
         id = opts.get('id')
         self._verify_id(id)
-        self.s.put(f"/app/{id}/enable")
+        return self.s.put(f"/app/{id}/enable")
 
     def disableApp(self, **opts):
         id = opts.get('id')
         self._verify_id(id)
-        self.s.put(f"/app/{id}/disable")
+        return self.s.put(f"/app/{id}/disable")
 
     def getAppLocales(self, **opts):
         id = opts.get('id')
