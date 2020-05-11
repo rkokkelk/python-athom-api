@@ -16,13 +16,12 @@ class ManagerSessions(Manager):
     def getSessions(self):
         r = self.s.get('/session')
         schema = SessionSchema(many=True)
-        return schema.loads(r)
+        return schema.loads(r.json())
 
     def getSessionMe(self):
         r = self.s.get('/session/me')
-        schema = SessionSchema()
-        return schema.loads(r)
+        return SessionSchema.loads(r)
 
-    def deleteSession(self):
-        raise NotImplementedError()
-
+    def deleteSession(self, **opts):
+        id = opts.get('id')
+        return self.s.delete(f'/session/{id}')
