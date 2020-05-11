@@ -10,8 +10,14 @@ class UserDevice:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    def __eq__(self, obj):
+        return isinstance(obj, UserDevice) and obj._id == self._id
+
     def __str__(self):
-        return f"[{self._id}] {self.name} ({self.platform})"
+        return f"{self.name}({self.platform})"
+
+    def __repr__(self):
+        return f"<UserDevice {self}>"
 
 
 class UserDeviceSchema(Schema):

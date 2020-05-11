@@ -19,7 +19,7 @@ class ManagerSpeechOutput(Manager):
     def getVoices(self, **opts):
         r = self.s.get('/voice/', params=opts)
         schema = VoiceSchema(many=True)
-        return schema.load(r.json())
+        return schema.load(r.text)
 
     def getVoice(self, **opts):
         id = opts.get('id')

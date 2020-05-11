@@ -7,6 +7,7 @@ from athom.common.net import AthomSession
 
 log = logging.getLogger(__name__)
 
+
 class Homey:
 
     def __init__(self, _id=None, token=None, **kwargs):
@@ -19,14 +20,19 @@ class Homey:
 
         # delegationToken is required for homeys/homeyAPI
         self.delegationToken = None
-        #self.apiVersion = int(self.softwareVersion.split('.')[0])
+        self.apiVersion = int(self.softwareVersion.split('.')[0])
 
         # Set request.Session for API interaction
         self.s = AthomSession()
 
-    def __str__(self):
-        return f"[{self._id}] {self.name} ({self.softwareVersion})"
+    def __eq__(self, obj):
+        return isinstance(obj, Homey) and obj._id == self._id
 
+    def __str__(self):
+        return f"{self.name}({self.softwareVersion})"
+
+    def __repr__(self):
+        return f"<Homey {self}>"
 
     def _setDelegationToken(self, token):
         self.delegationToken = token

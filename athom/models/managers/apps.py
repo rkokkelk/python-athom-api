@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
+
 class Apps:
 
     def __init__(self, **kwargs):
@@ -7,9 +8,14 @@ class Apps:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    def __eq__(self, obj):
+        return isinstance(obj, Apps) and obj.id == self.id
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.name}({self.version})"
+
+    def __repr__(self):
+        return f"<App {self}>"
 
 
 class AppsSchema(Schema):

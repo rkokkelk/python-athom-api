@@ -13,8 +13,14 @@ class Device:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    def __eq__(self, obj):
+        return isinstance(obj, Device) and obj.id == self.id
+
     def __str__(self):
-        return f"Device [{self.zoneName}] {self.name}"
+        return f"[{self.zoneName}] {self.name}"
+
+    def __repr__(self):
+        return f"<Device {self}>"
 
 
 class DeviceSchema(Schema):

@@ -4,6 +4,7 @@ from marshmallow import Schema, fields, post_load, EXCLUDE
 
 log = logging.getLogger(__name__)
 
+
 class Update:
 
     def __init__(self, version=None, **kwargs):
@@ -13,18 +14,17 @@ class Update:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-
     def languages(self):
         return list(self.changelog.keys())
 
-
     def __str__(self):
-        return f"Update {self.version}"
+        return self.version
 
+    def __repr__(self):
+        return f"<Update {self}>"
 
-    def __eq__(self, other):
-        return self.version == other.version
-
+    def __eq__(self, obj):
+        return isinstance(obj, Update) and self.version == obj.version
 
     def __lt__(self, other):
         s_split = self.version.split('-rc')
@@ -43,7 +43,6 @@ class Update:
         else:
             # 1.5.3 < 2.0.0-rc10
             return self.version < other.version
-
 
     def __gt__(self, other):
         s_split = self.version.split('-rc')

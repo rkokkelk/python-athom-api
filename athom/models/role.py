@@ -1,4 +1,5 @@
-from marshmallow import Schema, fields, post_load, EXCLUDE
+from marshmallow import Schema, post_load, EXCLUDE
+
 
 class Role:
 
@@ -9,8 +10,14 @@ class Role:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    def __eq__(self, obj):
+        return isinstance(obj, Role) and obj._id == self._id
+
     def __str__(self):
-        return f"[{self._id}] {self.name}"
+        return self.name
+
+    def __repr__(self):
+        return f"<Role {self}>"
 
 
 class RoleSchema(Schema):

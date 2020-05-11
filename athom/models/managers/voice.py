@@ -13,12 +13,18 @@ class Voice:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    def __eq__(self, obj):
+        return isinstance(obj, Voice) and obj.id == self.id
+
     def __str__(self):
-        return f"Voice [{self.id}] {self.name}"
+        return self.name
+
+    def __repr__(self):
+        return f"<Voice {self}>"
 
 
 class VoiceSchema(Schema):
-    sampleUrl = fields.Url
+    sampleUrl = fields.Url()
 
     class Meta:
         additional = ['id', 'name', 'language', 'locale', 'gender', 'installed']

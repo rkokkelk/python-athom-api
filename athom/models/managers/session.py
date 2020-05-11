@@ -1,8 +1,9 @@
 import logging
 
-from marshmallow import Schema, fields, post_load, EXCLUDE
+from marshmallow import Schema, post_load, EXCLUDE
 
 log = logging.getLogger(__name__)
+
 
 class Session:
 
@@ -14,17 +15,20 @@ class Session:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    def __str__(self):
-        return f"Session [{self.id}] {self.type}"
+    def __eq__(self, obj):
+        return isinstance(obj, Session) and obj.id == self.id
 
+    def __str__(self):
+        return f"[{self.type}] {self.scopes}"
+
+    def __repr__(self):
+        return f"<Session {self}>"
 
     def hasScope(self, scope):
         return scope in self.scopes
 
-
     def hasScopes(self, scopes):
         return all([scope in self.scopes for scope in scopes])
-
 
 
 class SessionSchema(Schema):

@@ -9,6 +9,7 @@ from marshmallow import Schema, fields, post_load, EXCLUDE
 
 log = logging.getLogger(__name__)
 
+
 class User:
 
     def __init__(self, _id=None, **kwargs):
@@ -21,9 +22,14 @@ class User:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    def __str__(self):
-        return f"[{self._id}] {self.firstname} {self.lastname}"
+    def __eq__(self, obj):
+        return isinstance(obj, User) and obj._id == self._id
 
+    def __str__(self):
+        return f"{self.firstname} {self.lastname}"
+
+    def __repr__(self):
+        return f"<User {self}>"
 
     def getDevice(self, d_id):
 
@@ -33,10 +39,8 @@ class User:
 
         raise LookupError()
 
-
     def getHomeys(self):
         return self.homeys
-
 
     def getHomeyById(self, h_id):
 
@@ -45,7 +49,6 @@ class User:
                 return homey
 
         raise LookupError()
-
 
     def getFirstHomey(self):
 
