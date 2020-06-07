@@ -63,7 +63,7 @@ def main():
         oauth_url = api.getLoginUrl()
 
         log.info("No active session found, opening URL to get OATH token")
-        time.sleep(5)
+        time.sleep(2)
 
         log.info("OATH URL: %s", oauth_url)
         webbrowser.open(oauth_url, new=2)

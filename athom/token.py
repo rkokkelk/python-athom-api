@@ -35,8 +35,6 @@ class Token:
         return {k: getattr(self, k) for k in columns}
 
     def refresh(self):
-        url = "https://api.athom.com/oauth2/token"
-
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
@@ -50,8 +48,7 @@ class Token:
 
         try:
             log.info("Refreshing token")
-            r = self.api.post(url, data=data, headers=headers)
-            r.raise_for_status()
+            r = self.api.post("/oauth2/token", data=data, headers=headers)
 
         except AthomCloudAuthenticationError:
             self.destroy()
@@ -79,9 +76,8 @@ class Token:
         return self._access_token is not None
 
     @staticmethod
-    def generate_token(athom, json_str):
+    def generate_token(athom, data):
         token = Token(athom)
-        data = json.loads(json_str)
 
         for key, value in data.items():
             setattr(token, key, value)

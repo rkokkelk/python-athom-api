@@ -43,7 +43,7 @@ class AthomCloudAPI:
 
         r = self.s.post('/oauth2/token', data=data, headers=headers)
 
-        self.token = Token.generate_token(self, r)
+        self.token = Token.generate_token(self, r.json())
         self.storage.set('token', self.token.jsonify())
 
         return self.token
