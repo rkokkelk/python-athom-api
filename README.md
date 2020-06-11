@@ -16,6 +16,7 @@ Currently the following managers are implemented:
 
 * [Apps](https://api.developer.athom.com/HomeyAPI.ManagerApps.html)
 * [Devices](https://api.developer.athom.com/HomeyAPI.ManagerDevices.html)
+* [Images](https://api.developer.athom.com/HomeyAPI.ManagerImages.html)
 * [Sessions](https://api.developer.athom.com/HomeyAPI.ManagerSessions.html)
 * [speechInput](https://api.developer.athom.com/HomeyAPI.ManagerSpeechInput.html)
 * [speechOutput](https://api.developer.athom.com/HomeyAPI.ManagerSpeechOutput.html)
