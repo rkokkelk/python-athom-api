@@ -48,7 +48,7 @@ class Token:
 
         try:
             log.info("Refreshing token")
-            r = self.api.post("/oauth2/token", data=data, headers=headers)
+            r = self.api.post("https://api.athom.com/oauth2/token", data=data, headers=headers)
 
         except AthomCloudAuthenticationError:
             self.destroy()
