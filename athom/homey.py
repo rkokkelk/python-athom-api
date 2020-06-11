@@ -1,3 +1,4 @@
+from athom.common.net import AthomSession
 from athom.managers.apps import ManagerApps
 from athom.managers.users import ManagerUsers
 from athom.managers.images import ManagerImages
@@ -28,6 +29,9 @@ class HomeyAPI:
         self.session = ManagerSessions(**manager_options)
         self.speechInput = ManagerSpeechInput(**manager_options)
         self.speechOutput = ManagerSpeechOutput(**manager_options)
+
+        # Set request.Session for API interaction
+        self.s = AthomSession(token=self.token, base=self.url)
 
     def forCurrentHomey(self):
         raise NotImplementedError("This function is not supported by this module")
