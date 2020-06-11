@@ -11,10 +11,11 @@ class Image:
         self.id = id
 
         homey_url = kwargs.pop('homey_url', '')
-        self.fullUrl = homey_url + self.url
 
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+        self.fullUrl = homey_url + self.url
 
     def __eq__(self, obj):
         return isinstance(obj, Image) and obj.id == self.id
