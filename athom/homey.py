@@ -1,5 +1,6 @@
 from athom.managers.apps import ManagerApps
 from athom.managers.users import ManagerUsers
+from athom.managers.images import ManagerImages
 from athom.managers.devices import ManagerDevices
 from athom.managers.sessions import ManagerSessions
 from athom.managers.speechInput import ManagerSpeechInput
@@ -22,6 +23,7 @@ class HomeyAPI:
         }
 
         self.apps = ManagerApps(**manager_options)
+        self.images = ManagerImages(**manager_options)
         self.devices = ManagerDevices(**manager_options)
         self.session = ManagerSessions(**manager_options)
         self.speechInput = ManagerSpeechInput(**manager_options)

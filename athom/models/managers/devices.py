@@ -1,5 +1,7 @@
 import logging
 
+from athom.models.managers.images import ImageSchema
+
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
 log = logging.getLogger(__name__)
@@ -23,19 +25,30 @@ class Device:
         return f"<Device {self}>"
 
 
+class DeviceImageSchema(Schema):
+
+    imageObj = fields.Nested(ImageSchema)
+
+    class Meta:
+        additional = ['type', 'id', 'title']
+        unknown = EXCLUDE
+
+
 class DeviceSchema(Schema):
 
     # Specify vars which can have None values
     icon = fields.Str(allow_none=True)
     virtualClass = fields.Str(allow_none=True)
     energy = fields.Str(allow_none=True)
+    images = fields.List(fields.Nested(DeviceImageSchema), many=True)
     unavailableMessage = fields.Str(allow_none=True)
 
     class Meta:
-        additional = ['id', 'name', 'driverUri', 'driverId', 'zone', 'zoneName', 'iconObj',
-                      'settings', 'settingsOjb', 'class', 'energyObj',
-                      'ui', 'capabilities', 'capabilitiesObj', 'capabilitiesOptions', 'flags',
-                      'ready', 'available', 'repair', 'unpair', 'images',
+        additional = ['id', 'name', 'driverUri', 'driverId', 'zone', 'zoneName',
+                      'iconObj', 'settings', 'settingsOjb', 'class', 'energyObj',
+                      'ui', 'capabilities', 'capabilitiesObj',
+                      'capabilitiesOptions', 'flags', 'ready', 'available', 
+                      'repair', 'unpair', 'images', 
                       'insights', 'color']
         unknown = EXCLUDE
 
