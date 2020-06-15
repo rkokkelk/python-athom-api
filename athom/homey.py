@@ -1,11 +1,11 @@
 from athom.common.net import AthomSession
 from athom.managers.apps import ManagerApps
-from athom.managers.users import ManagerUsers
 from athom.managers.images import ManagerImages
 from athom.managers.devices import ManagerDevices
 from athom.managers.sessions import ManagerSessions
 from athom.managers.speechInput import ManagerSpeechInput
 from athom.managers.speechOutput import ManagerSpeechOutput
+from athom.managers.users import ManagerUsers
 
 
 class HomeyAPI:
@@ -14,9 +14,8 @@ class HomeyAPI:
         self.url = url
 
         # Use delegationToken to create sessionToken to access API
-        self.users = ManagerUsers(homey=self)
         # Ensure to get a valid Session
-        self.token = self.users.login(token)
+        self.token = ManagerUsers(homey=self).login(token)
 
         manager_options = {
             'homey': self,
@@ -29,6 +28,7 @@ class HomeyAPI:
         self.session = ManagerSessions(**manager_options)
         self.speechInput = ManagerSpeechInput(**manager_options)
         self.speechOutput = ManagerSpeechOutput(**manager_options)
+        self.users = ManagerUsers(**manager_options)
 
         # Set request.Session for API interaction
         self.s = AthomSession(token=self.token, base=self.url)
