@@ -67,6 +67,21 @@ class AthomCloudAPI:
         user._setDelegationToken(self.token)
         return user
 
+    def getAuthenticatedUser(self, **kwargs):
+        if kwargs.get('additionalScopes'):
+            #params = { 'additionalScopes': ','.join(kwargs.get('additionalScopes'))}
+            response = self.s.get('/user/me')
+        else:
+            response = self.s.get('/user/me')
+
+        log.info(response.json())
+        schema = UserSchema()
+        user = schema.loads(response.text)
+
+        # delegationToken is required for homeys/homeyAPI
+        user._setDelegationToken(self.token)
+        return user
+
 
     def hasAuthorizationCode(self):
         return self.token is not None and self.token
