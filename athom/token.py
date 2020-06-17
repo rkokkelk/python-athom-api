@@ -2,6 +2,7 @@ import json
 import requests
 import logging
 
+from athom.common.net import AthomSession
 from athom.common.exceptions import AthomCloudAuthenticationError, \
                                     AthomAPISessionError
 
@@ -17,7 +18,7 @@ class Token:
         self.refresh_token = kwargs.get('refresh_token', None)
 
         self.athom = athom
-        self.api = requests.Session()
+        self.s = AthomSession(base='https://api.athom.com')
 
     @property
     def access_token(self):
@@ -48,7 +49,7 @@ class Token:
 
         try:
             log.info("Refreshing token")
-            r = self.api.post("https://api.athom.com/oauth2/token", data=data, headers=headers)
+            r = self.s.post('/oauth2/token', data=data, headers=headers)
 
         except AthomCloudAuthenticationError:
             self.destroy()
