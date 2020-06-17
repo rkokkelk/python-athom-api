@@ -27,12 +27,14 @@ banner = """\
 
 log = logging.getLogger('athom')
 
+
 def parse_args():
     p = argparse.ArgumentParser(description="Example script for python-athom-api module")
     p.add_argument('-d', help="Show debug output", action="store_true", default=False, dest='debug')
     p.add_argument('--client-id', help="Client ID to access Athom API", dest='clientId', required=True)
     p.add_argument('--client-secret', help="Client secret to access Athom API", dest='clientSecret', required=True)
     p.add_argument('--return-url', help="Return URL for OAUTH2 authentication", default='http://localhost', dest='returnURL')
+    p.add_argument('--scopes', help="List of scopes", default="", dest='scopes')
 
     return p.parse_args()
 
@@ -54,13 +56,13 @@ def main():
     args = parse_args()
     setup_logging(args)
 
-    # Start by getting an instance of the AthomCloudAPI, providing the client id/secret and
-    # returnURL for OATH authentication
+    # Start by getting an instance of the AthomCloudAPI, providing the client
+    # id/secret and returnURL for OATH authentication
     api = AthomCloudAPI(args.clientId, args.clientSecret, args.returnURL)
 
     # Verify if there exists an acive session, if not get one
     if not api.hasAuthorizationCode() or not api.isLoggedIn():
-        oauth_url = api.getLoginUrl()
+        oauth_url = api.getLoginUrl(scopes=args.scopes.split(','))
 
         log.info("No active session found, opening URL to get OATH token")
         time.sleep(2)
@@ -88,8 +90,7 @@ def main():
             log.info("Got OAUTH token, authenticating!")
             api.authenticateWithAuthorizationCode(oauth)
 
-    user = api.getUser()
-
+    user = api.getAuthenticatedUser()
 
     # Start interactive console
     # TODO: extend symbolic table to include all module classes/functions
