@@ -56,8 +56,7 @@ class Token:
             log.error("OAUTH2 session has expired, required to login again!")
             raise AthomAPISessionError()
 
-        data = r.json()
-        for key, value in data.items():
+        for key, value in r.json().items():
             setattr(self, key, value)
 
         self.athom.storage.set('token', self.jsonify())
